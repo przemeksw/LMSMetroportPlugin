@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS metroport_customers (
 );
 
 -- uiconfig
-INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, configid, divisionid) VALUES ('metroport', 'serwer_url', 'api.mmsc-dev.metroport.pl ', 'Adres url serwera API Metroport', 0, 7, NULL, NULL, NULL);
-INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, configid, divisionid) VALUES ('metroport', 'api_login', 'pswiderski ', 'Login do serwera API', 0, 7, NULL, NULL, NULL);
-INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, configid, divisionid) VALUES ('metroport', 'api_pass', 'ghlh7aAFyjJzasO', 'Hasło do serwera API', 0, 7, NULL, NULL, NULL);
+INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, configid, divisionid) VALUES ('metroport', 'serwer_url', 'api.mmsc.metroport.pl ', 'Adres url serwera API Metroport', 0, 7, NULL, NULL, NULL);
+INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, configid, divisionid) VALUES ('metroport', 'api_login', 'loginki ', 'Login do serwera API', 0, 7, NULL, NULL, NULL);
+INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, configid, divisionid) VALUES ('metroport', 'api_pass', 'pass', 'Hasło do serwera API', 0, 7, NULL, NULL, NULL);
 INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, configid, divisionid) VALUES ('metroport', 'automatically_update_customer_data', 'true', 'true - przy edycji klienta automatycznie aktualizuje dane w MMS, false wymaga ręcznej aktualizacji', 0, 7, NULL, NULL, NULL);
 INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, configid, divisionid) VALUES ('metroport', 'api_token_expiration_time', '1200', 'Timeout dla tokena w sekundach. Domyslnie 1200s', 0, 7, NULL, NULL, NULL);
 
