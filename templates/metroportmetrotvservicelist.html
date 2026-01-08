@@ -1,0 +1,64 @@
+{extends file="layout.html"}
+{block name="module_content"}
+<h2>Lista pakietów MetroTV dostępna w sprzedaży Metroport.</h2>
+
+{if $metroportMetroTVResult.status == 'success' && $metroportMetroTVResult.data|@count > 0}
+        <table cellpadding class="lmsbox lms-ui-datatable " width="100%">
+            <thead>
+                <tr>
+                    <th>L.p.</th>
+                    <th>Nazwa</th>
+                    <th>Opis</th>
+                    <th>Ważny od</th>
+                    <th>Ważny do</th>
+                    <th>Cena rozliczeniowa netto</th>
+                    <th>Cena rozliczeniowa brutto</th>
+                    <th>Cena netto klient</th>
+                    <th>Cena brutto klient</th>
+                    <th>Vat</th>
+                    <th>Grupa pakietu</th>
+                    <th>Czy aktywny</th>
+                </tr>
+            </thead>
+            <tbody>
+            {foreach from=$metroportMetroTVResult.data key=index item=service}
+                {assign var="pkg_map" value=[
+                    1 => 'podstawowy',
+                    2 => 'dodatkowy',
+                    3 => 'multiroom',
+                    4 => 'PPV'
+                ]}
+
+                {assign var="pkg_active" value=[
+                    0 => 'nieaktywny',
+                    1 => 'aktywny'
+                ]}
+                    <tr class="highlight light">
+                        <td>{$index+1}</td>
+                        <td>{$service.tariffcode|escape}</td>
+                        <td>{$service.pkg_name|escape}</td>
+                        <td>{$service.pkg_valid_from|escape}</td>
+                        <td>{$service.pkg_valid_to|escape}</td>
+                        <td>{$service.pricenetto_provider|escape}</td>
+                        <td>{$service.pricebrutto_provider|escape}</td>
+                        <td>{$service.pricenetto|escape}</td>
+                        <td>{$service.pricebrutto|escape}</td>
+                        <td>{$service.vat|escape}%</td>
+                        <td>{$pkg_map[$service.pkg_group]}</td>
+                        <td>{$pkg_active[$service.active]}</td>
+                    </tr>
+                {/foreach}
+            </tbody>
+        </table>
+
+{elseif $metroportMetroTVResult.status == 'error'}
+    <div class="alert alert-danger">
+        {$metroportMetroTVResult.message}
+    </div>
+{else}
+    <div class="alert alert-info">
+        Brak usług MetroTV do wyświetlenia.
+    </div>
+{/if}
+
+{/block}

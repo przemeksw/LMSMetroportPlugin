@@ -1,0 +1,285 @@
+{extends file="layout.html"}
+{block name="module_content"}
+<style>
+.stb_edit {
+    font-size: 0.7rem;        /* mniejsza czcionka */
+    font-weight: bold;      /* normalna grubość */
+    padding: 0.2rem 0.4rem;   /* mniejsze pady */
+    color: #fff;
+    background-color: #007bff; /* bootstrap primary */
+    border-color: #007bff;
+    cursor: pointer;
+}
+
+.stb_edit:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.stb_delete {
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 0.2rem 0.4rem;
+    color: #fff;
+    background-color: #dc3545; /* bootstrap danger */
+    border-color: #dc3545;
+    cursor: pointer; 
+}
+
+.stb_delete:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+.stb_add {
+    font-size: 0.75rem;      /* mała czcionka */
+    font-weight: bold;       /* pogrubiona czcionka */
+    padding: 0.25rem 0.5rem;
+    line-height: 1.2;
+    border-radius: 0.25rem;
+    margin-bottom: 0.25rem;
+    color: #fff;
+    background-color: #28a745; /* Bootstrap success */
+    border-color: #28a745;
+     cursor: pointer; 
+}
+
+.stb_add:hover {
+    background-color: #218838; /* ciemniejszy zielony przy hover */
+    border-color: #1e7e34;
+}
+</style>
+<h2>Lista STB.</h2>
+
+{if $metroportMetroTVResult.status == 'success' && $metroportMetroTVResult.data|@count > 0}
+<button style="margin-bottom: 10px;" class="stb_add btn btn-primary">DODAJ STB</button>
+        <table cellpadding class="lmsbox lms-ui-datatable " width="100%">
+        <thead>
+            <tr>
+                <th>L.p.</th>
+                <th>Serial</th>
+                <th>Mac</th>
+                <th>Ip</th>
+                <th>Model</th>
+		<th>Abonent</th>
+		<th>Service Type</th>
+		<th>Status</th>
+		<th>Opis</th>
+		<th>Akcja</th>
+            </tr>
+        </thead>
+        <tbody>
+            {foreach from=$metroportMetroTVResult.data key=index item=stb}
+		{assign var="mycast_map" value=[
+		    0 => 'Brak wsparcia',
+		    1 => 'Tak'
+		]}
+		{assign var="probe_map" value=[
+		    0 => 'Nie',
+		    1 => 'Tak'
+		]}
+                <tr class="highlight light">
+                    <td>{$index+1}</td>
+                    <td>{$stb.serialnumber|escape}</td>
+                    <td>{$stb.mac|escape}</td>
+                    <td>{if $stb.ipaddr && $stb.ipaddr|long2ip != '0.0.0.0'}{$stb.ipaddr|long2ip}{/if}</td>
+                    <td>{$stb.modelname}</td>
+		    <td>{$stb.UserName} ( <span style="color: #800000;"><a href="?m=customerinfo&id={$stb.lms_user_id}">{$stb.lms_username}</a></span> )</td>
+		    <td>{$stb.servicetype}</td>
+		    <td>{$stb.StatusName}</td>
+		    <td>{$stb.description}</td>
+		    <td>{if $stb.status != 3}<button data-serial="{$stb.serialnumber|escape}" data-stbid={$stb.id} data-mac="{$stb.mac|escape}" class="stb_delete btn btn-danger">Usuń</button>{/if}</td>
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+
+{elseif $metroportMetroTVResult.status == 'error'}
+    <div class="alert alert-danger">
+        {$metroportMetroTVResult.message}
+    </div>
+
+{else}
+    <div class="alert alert-info">
+        Brak usług MetroTV do wyświetlenia.
+    </div>
+{/if}
+<div  style="display:none; font-size:12px;" id="api_stb_div" title=""></div>
+{literal}
+<script>
+$(document).ready(function()
+{
+	$("#api_stb_div").dialog(
+	{
+		autoOpen: false,
+		width:"340px",
+		position: { my: 'top', at: 'top+150' },
+	});
+	
+	$(document).on("click", ".stb_delete", function () {
+	    var mac = $(this).data("mac");
+	    var serial = $(this).data("serial");
+	    var id = $(this).data("stbid");
+	    confirmDialog(
+		"<center>Czy chcesz usunąć STB ?<br><br><br> MAC: <strong>" + mac + "</strong><br>SERIAL: <strong>"+serial+"</strong></center>",null
+	    ).done(function () {window.location.href = "?m=metroportmetrotvstblist&id="+id+"&stb_mac=" + mac +'&DeleteStb=true';
+	    });
+	    return false;	
+	});
+
+    $(document).on("click", ".stb_add", function () {
+		// Jeśli diva nie ma, dodaj go do body
+		if ($("#api_stb_div").length === 0) {
+		$	("body").append('<div id="api_stb_div"></div>');
+		}
+
+		// Wstawiamy HTML do diva
+		var innerHtml = `
+		<form id="stb_form" style="font-family:Arial, sans-serif; font-size:14px;">
+			<!-- Komunikaty o błędach -->
+			<div id="error-msg" style="display:none; padding:8px; margin-bottom:12px; border:1px solid #e74c3c; background-color:#fdecea; color:#c0392b; border-radius:4px;"></div>
+
+			<!-- Model -->
+			<div id="model_placeholder" style="margin-bottom:12px;">
+			<label for="model_select">Model:</label><br>
+			<select id="model_select" style="width:100%;" class="lms-ui-advanced-select">
+				<option value="">Ładowanie...</option>
+			</select>
+			</div>
+
+			<!-- MAC -->
+			<div style="margin-bottom:12px;">
+			<label for="mac_input">MAC:</label><br>
+			<input type="text" id="mac_input" placeholder="AA:BB:CC:DD:EE:FF" style="width:100%;" maxlength="17">
+			</div>
+
+			<!-- Serial -->
+			<div style="margin-bottom:12px;">
+			<label for="serial_input">Serial:</label><br>
+			<input type="text" id="serial_input" style="width:100%;">
+			</div>
+
+			<!-- Przyciski -->
+			<div style="text-align:center;">
+			<button type="button" class="lms-ui-button" id="btnAdd">Dodaj</button>
+			<button type="button" class="lms-ui-button" id="btnCancel">Anuluj</button>
+			</div>
+		</form>
+		`;
+		$("#api_stb_div").html(innerHtml);
+
+		// Inicjalizacja dialogu (jeśli nie była jeszcze)
+		if (!$("#api_stb_div").hasClass("ui-dialog-content")) {
+		$("#api_stb_div").dialog({
+			autoOpen: false,
+			modal: true,
+			width: 350
+		});
+		}
+
+		// Ustaw tytuł dialogu
+		$("#api_stb_div").dialog("option", "title", "Dodaj STB");
+
+		// Wyczyść pola i komunikat
+		$("#mac_input").val('');
+		$("#serial_input").val('');
+		$("#error-msg").hide();
+
+		// Otwórz dialog
+		$("#api_stb_div").dialog("open");
+
+		// Pobierz listę modeli AJAX-em
+		$.ajax({
+		url: "?m=metroportmetrotvstblist",
+		type: "GET",
+		data: { getModelList: true },
+		dataType: "json",
+		success: function(data) {
+			var options = '<option value="">Wybierz model</option>';
+			if (Array.isArray(data)) {
+			data.forEach(function(model) {
+				options += '<option value="' + model.name + '">' + model.name + '</option>';
+			});
+			}
+			$("#model_select").html(options);
+		},
+		error: function() {
+			$("#model_select").html('<option value="">Błąd ładowania</option>');
+		}
+		});
+
+		// Formatowanie MAC w czasie pisania
+		$("#mac_input").on("input", function() {
+		var val = $(this).val().toUpperCase().replace(/[^0-9A-F]/g,'');
+		var formatted = val.match(/.{1,2}/g);
+		if (formatted) {
+			$(this).val(formatted.join(':').substr(0,17));
+		} else {
+			$(this).val(val.substr(0,17));
+		}
+		});
+
+		// Obsługa przycisku Anuluj
+		$("#btnCancel").on("click", function() {
+		$("#api_stb_div").dialog("close");
+		});
+
+		// Obsługa przycisku Dodaj
+		$("#btnAdd").on("click", function() {
+
+		var model = $("#model_select").val();
+		var mac = $("#mac_input").val().toUpperCase();
+		var serial = $("#serial_input").val().trim();
+		var errorMsg = "";
+
+		if (model === "") {
+			errorMsg = "Musisz wybrać model!";
+		} else if (!/^([0-9A-F]{2}:){5}[0-9A-F]{2}$/.test(mac)) {
+			errorMsg = "Nieprawidłowy format MAC!";
+		} else if (serial === "") {
+			errorMsg = "Pole Serial musi być wypełnione!";
+		}
+
+		if (errorMsg) {
+			$("#error-msg").text(errorMsg).fadeIn();
+			setTimeout(function() {
+			$("#error-msg").fadeOut();
+			}, 10000);
+			return;
+		}
+		$("#api_stb_div").html('<div id="error-msg" style="padding:8px; margin-bottom:12px; border:1px solid #e74c3c; background-color:#fdecea; color:#c0392b; border-radius:4px;">⏳ Trwa wysyłanie danych do Metroport...</div>');
+		$.ajax({
+			url: "?m=metroportmetrotvstblist",
+			type: "POST",
+			data: { 'AddModel': true, 'model': model, 'serial': serial, 'mac':mac },
+			dataType: "json",
+			success: function(data) {
+			if (data.success === true) {
+				$("#api_stb_div").html('<div id="stb-success" style="background-color:#d4edda;color:#155724;border:1px solid #c3e6cb;padding:15px;margin:20px 0;border-radius:8px;font-family:Arial,sans-serif;text-align:center;"><b>Dodano STB</b><br></div><div style="text-align:center;"><button id="close-btn" class="lms-ui-button">Zamknij</button></div>');
+				$("#close-btn").on("click", function() {
+				location.reload();
+				});
+			} else {
+				$("#api_stb_div").html('<div id="stb-error" style="background-color:#f8d7da;color:#721c24;border:1px solid #f5c6cb;padding:15px;margin:20px 0;border-radius:8px;font-family:Arial,sans-serif;text-align:center;"><b>Błąd:</b> ' + (data.body || 'Wystąpił błąd') + '<br></div><div style="text-align:center;"><button id="close-btn" class="lms-ui-button">Zamknij</button></div>');
+				$("#close-btn").on("click", function() {
+				location.reload();
+				});
+			}
+			},
+			error: function() {
+			$("#api_stb_div").html('<div id="stb-error" style="background-color:#f8d7da;color:#721c24;border:1px solid #f5c6cb;padding:15px;margin:20px 0;border-radius:8px;font-family:Arial,sans-serif;text-align:center;"><b>Błąd:</b> ' + (data.body || 'Wystąpił błąd') + '<br></div><div style="text-align:center;"><button id="close-btn" class="lms-ui-button">Zamknij</button></div>');
+				$("#close-btn").on("click", function() {
+				location.reload();
+				});
+			}
+		});
+		$("#error-msg").hide();
+
+		});
+    });
+
+
+
+   }); 
+</script>    
+{/literal}
+{/block}

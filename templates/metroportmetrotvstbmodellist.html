@@ -1,0 +1,47 @@
+{extends file="layout.html"}
+{block name="module_content"}
+<h2>Lista wspieranych modeli STB.</h2>
+
+{if $metroportMetroTVResult.status == 'success' && $metroportMetroTVResult.data|@count > 0}
+    <table cellpadding class="lmsbox lms-ui-datatable " width="100%">
+        <thead>
+            <tr>
+                <th>L.p.</th>
+                <th>Nazwa</th>
+                <th>Opis</th>
+                <th>MyCast Support</th>
+                <th>Sonda</th>
+            </tr>
+        </thead>
+        <tbody>
+            {foreach from=$metroportMetroTVResult.data key=index item=model}
+                {assign var="mycast_map" value=[
+                    0 => 'Brak wsparcia',
+                    1 => 'Tak'
+                ]}
+                {assign var="probe_map" value=[
+                    0 => 'Nie',
+                    1 => 'Tak'
+                ]}
+                <tr class="highlight light">
+                    <td>{$index+1}</td>
+                    <td>{$model.name|escape}</td>
+                    <td>{$model.description|escape}</td>
+                    <td>{$mycast_map[$model.mycast_supported]}</td>
+                    <td>{$probe_map[$model.probe]}</td>
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+
+{elseif $metroportMetroTVResult.status == 'error'}
+    <div class="alert alert-danger">
+        {$metroportMetroTVResult.message}
+    </div>
+{else}
+    <div class="alert alert-info">
+        Brak usług MetroTV do wyświetlenia.
+    </div>
+{/if}
+
+{/block}

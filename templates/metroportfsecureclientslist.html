@@ -1,0 +1,169 @@
+{extends file="layout.html"}
+{block name="module_content"}
+<style>
+.alert {
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+}
+
+.fsecure-services-list {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.fsecure-services-list li {
+    margin-bottom: 5px;
+}
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+}
+
+/* ukryj pusty badge (jak w bootstrap) */
+.badge:empty {
+  display: none;
+}
+
+/* pill */
+.badge-pill {
+  padding-right: 0.6em;
+  padding-left: 0.6em;
+  border-radius: 10rem;
+}
+
+/* kolory podstawowe */
+.badge-primary       { background-color: #007bff; }
+.badge-secondary     { background-color: #6c757d; }
+.badge-success       { background-color: #28a745; }
+.badge-danger        { color: #fff; background-color: #dc3545; }
+.badge-warning       { background-color: #ffc107; color: #212529; }
+.badge-info          { background-color: #17a2b8; }
+.badge-light         { background-color: #f8f9fa; color: #212529; }
+.badge-dark          { background-color: #343a40; }
+
+
+</style>
+<h2>Lista klientów z usługą F-SECURE.</h2>
+{if $metroportclientlistResult.status == 'success' && $metroportclientlistResult.data.data|@count > 0}
+	<table cellpadding class="lmsbox  lms-ui-datatable" id=genieacscustomerdevlist>
+			<colgroup>
+					<col >
+					<col >
+					<col >
+					<col >
+					<col >
+					<col >
+					<col >
+					<col >
+			</colgroup>
+			<thead>
+				<tr>
+					<td>
+						<strong>Id MMS</strong>
+					</td>
+					<td>
+						<strong>Imię Nazwisko/Nazwa (LMS USERNAME)</strong>
+					</td>
+					<td>
+						<strong>Usługa</strong>
+					</td>
+					<td>
+						<strong>Ilość licencji</strong>
+					</td>
+					<td>
+						<strong>Status</strong>
+					</td>
+					<td>
+						<strong>Data Aktywcji</strong>
+					</td>
+					<td>
+						<strong>Data Blokady</strong>
+					</td>
+					<td></td><td></td>
+				</tr>
+			</thead>
+			<tbody>
+			{cycle values="lucid,light" print=false}
+				{section name=customerlist loop=$metroportclientlistResult.data.data start=$start max=$pagelimit}
+					<tr data-device-id="{$netdevlist[netdevlist].device_id|escape}" class="highlight {cycle advance=false}">
+						<td class="valign-top">
+							{$metroportclientlistResult.data.data[customerlist].userid}
+						</td>
+						<td class="valign-top">
+							{$metroportclientlistResult.data.data[customerlist].mms_username} ( <span style="color: #800000;"><a href="?m=customerinfo&id={$metroportclientlistResult.data.data[customerlist].lms_user_id}">{$metroportclientlistResult.data.data[customerlist].lms_username}</a></span> )
+						</td>
+						<td class="valign-top">
+							{$metroportclientlistResult.data.data[customerlist].secur_servicename} 
+						</td>
+						<td class="valign-top">
+							{$metroportclientlistResult.data.data[customerlist].license_size}
+						</td>
+						<td class="valign-top">
+							{$metroportclientlistResult.data.data[customerlist].status_readable}
+						</td>
+						<td class="valign-top">
+							{$metroportclientlistResult.data.data[customerlist].activedate}
+						</td>
+						<td class="valign-top">
+							{$metroportclientlistResult.data.data[customerlist].blockdate}
+						</td>
+						<td></td><td></td>
+					</tr>
+				{sectionelse}
+						<tr>
+							<td colspan="9" class="empty-table">
+								<p>Brak klientów w systemie MMS.</p>
+							</td>
+						</tr>
+				{/section}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="8" class="text-center">
+					<strong>
+						{trans("Total:")} {$listdata.total|default:"0"}
+					</strong>
+					</td>
+					<td></td>
+				</tr>
+			</tfoot>
+	</table>
+{elseif $metroportclientlistResult.status == 'error'}
+    <div class="alert alert-danger">
+        {$metroportclientlistResult.message}
+    </div>
+{else}
+    <div class="alert alert-info">
+        Brak usług F-Secure do wyświetlenia.
+    </div>
+{/if}
+
+{/block}

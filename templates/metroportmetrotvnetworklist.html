@@ -1,0 +1,55 @@
+{extends file="layout.html"}
+{block name="module_content"}
+<h2>Lista podsieci dla usługi MetroTV.</h2>
+
+{if $metroportMetroTVResult.status == 'success' && $metroportMetroTVResult.data|@count > 0}
+        <table cellpadding class="lmsbox lms-ui-datatable " width="100%">
+            <thead>
+                <tr>
+                    <th>L.p.</th>
+                    <th>Nazwa</th>
+                    <th>Address</th>
+                    <th>Prefix</th>
+                    <th>Maska</th>
+                    <th>Wielkość</th>
+                    <th>Transport</th>
+                    <th>Ilość STB</th>
+                </tr>
+            </thead>
+            <tbody>
+            {foreach from=$metroportMetroTVResult.data key=index item=service}
+                {assign var="pkg_map" value=[
+                    1 => 'podstawowy',
+                    2 => 'dodatkowy',
+                    3 => 'multiroom',
+                    4 => 'PPV'
+                ]}
+
+                {assign var="pkg_active" value=[
+                    0 => 'nieaktywny',
+                    1 => 'aktywny'
+                ]}
+                <tr class="highlight light">
+                    <td>{$index+1}</td>
+                    <td>{$service.name|escape}</td>
+                    <td>{$service.address|@long2ip}</td>
+                    <td>/{$service.mask_prefix|escape}</td>
+                    <td>{$service.mask|escape}</td>
+                    <td>{$service.size|escape}</td>
+                    <td>{$service.transport|escape}</td>
+                    <td>{$service.TotalSTBs|escape}</td>
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+
+{elseif $metroportMetroTVResult.status == 'error'}
+    <div class="alert alert-danger">
+        {$metroportMetroTVResult.message}
+    </div>
+{else}
+    <div class="alert alert-info">
+        Brak usług MetroTV do wyświetlenia.
+    </div>
+{/if}
+{/block}

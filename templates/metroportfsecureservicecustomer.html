@@ -1,0 +1,684 @@
+<style>
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    margin: auto;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+}
+
+.gray-text {
+    color: #888;
+}
+/* ukryj pusty badge (jak w bootstrap) */
+.badge:empty {
+  display: none;
+}
+
+/* pill */
+.badge-pill {
+  padding-right: 0.6em;
+  padding-left: 0.6em;
+  border-radius: 10rem;
+}
+
+/* kolory podstawowe */
+.badge-primary       { background-color: #007bff; }
+.badge-secondary     { background-color: #6c757d; }
+.badge-success       { background-color: #28a745; }
+.badge-danger        { background-color: #dc3545; }
+.badge-warning       { background-color: #ffc107; color: #212529; }
+.badge-info          { background-color: #17a2b8; }
+.badge-light         { background-color: #f8f9fa; color: #212529; }
+.badge-dark          { background-color: #343a40; }
+
+/* hover/focus dla linków (jak w bootstrap) */
+a.badge:focus, a.badge:hover {
+  text-decoration: none;
+  color: #fff;
+}
+.badge-primary[href]:focus, .badge-primary[href]:hover   { background-color: #0069d9; }
+.badge-secondary[href]:focus, .badge-secondary[href]:hover { background-color: #545b62; }
+.badge-success[href]:focus, .badge-success[href]:hover   { background-color: #218838; }
+.badge-danger[href]:focus, .badge-danger[href]:hover     { background-color: #c82333; }
+.badge-warning[href]:focus, .badge-warning[href]:hover   { background-color: #e0a800; color: #212529; }
+.badge-info[href]:focus, .badge-info[href]:hover         { background-color: #138496; }
+.badge-light[href]:focus, .badge-light[href]:hover       { background-color: #e2e6ea; color: #212529; }
+.badge-dark[href]:focus, .badge-dark[href]:hover         { background-color: #1d2124; }
+</style>
+
+<TABLE class="lmsbox lms-ui-tab-container lms-ui-sortable" id="fsecure_customer_services">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
+	<THEAD>
+	    <TR id="fsecure_customer_services-header" class="hand lmsbox-titlebar" data-lmsbox-content="fsecure_customer_services-panel" >
+		    <TD class="bold">
+			    <IMG src="img/settings.gif" alt="">
+			    Usługi F-Secure (Metroport) (<span id="ServicesFsecureCount"></span>):
+		    </TD>
+		    <TD class="text-right nobr">
+			<div id='customer_action_fsecure_box'></div>
+		    </TD>
+	    </TR>
+	</THEAD>
+	<TBODY id="fsecure_customer_services-panel" class="lms-ui-multi-check" style="display: none;">
+	    <TR>
+		<TD colspan="3">
+		    <TABLE class="lmsbox-inner keys-table lms-ui-background-cycle fsecure_customer_service">
+				<COLGROUP>
+					<COL style="width: 5%;">
+					<COL style="width: 40%;">
+					<COL style="width: 5%;">
+					<COL style="width: 20%;">
+					<COL style="width: 10%;">
+					<COL style="width: 10%;">
+					<COL style="width: 35%;">
+				</COLGROUP>
+				<THEAD>
+					<TR class="fbottom">
+					<TD  class="bold nobr">{trans("Id konta MMS:")}</TD>
+					<TD class="bold nobr">{trans("Nazwa usługi:")}</TD>
+					<TD class="bold nobr">{trans("Ilość licencji:")}</TD>
+					<TD class="bold nobr">{trans("Status:")}</TD>
+					<TD class="bold nobr">{trans("Data aktywacji:")}</TD>
+					<TD class="bold nobr">{trans("Data blokady:")}</TD>
+					<TD class="bold nobr">{trans("Akcje:")}</TD>
+					</TR>
+				</THEAD>
+				<TBODY>
+				</TBODY>
+		    </TABLE>
+		</TD>
+	    </TR>
+	</TBODY>
+</TABLE>
+
+<div  style="display:none; font-size:12px;" id="api_customer" title=""></div>
+	{literal}
+<script>
+    (function() {
+	$("#fsecure_customer_services-panel").toggle(getStorageItem("fsecure_customer_services-panel", "local") == "1");
+    })();
+    $(document).ready(function()
+    {
+        $("#api_customer").dialog(
+        {
+            autoOpen: false,
+            width:"740px",
+            position: { my: 'top', at: 'top+150' },
+        });
+	get_fsecure_customer_services_list(customer_id);
+    });
+      
+    function toggleTariffs() {
+	if ($('#addtarrif').is(':checked')) {
+	    $('.lms_tarif').show();
+	    $('#addtarrif').val(1);
+	    let today = new Date();
+            let formattedDate = today.getFullYear() + '/' + String(today.getMonth() + 1).padStart(2, '0') + '/' + String(today.getDate()).padStart(2, '0');
+	    // Wstaw do pola
+	    $('#tariff_from').val(formattedDate);
+	} else {
+	    $('.lms_tarif').hide();
+	    $('#addtarrif').val(0);
+	}
+    }
+
+    $(document).on('change', '#addtarrif', function() {
+        toggleTariffs();
+    });
+
+    toggleTariffs();
+	{/literal}
+
+    var LmsUserRightAdd_Edit_MMMS_User_Access = "{ConfigHelper::checkPrivilege('metroportcustomerupdate_ajax')|escape:'javascript'}";
+    var LmsUserRightAdd_Edit_MMMS_Fsecure_Access = "{ConfigHelper::checkPrivilege('metroportfsecureservicesaction')|escape:'javascript'}";  
+    var LmsUserRightReadOnly_Fsecure_Customer_Access = "{ConfigHelper::checkPrivilege('metroport_readonly')|escape:'javascript'}";
+    var customer_id = "{$LmsCustomerId|escape:'javascript'}";
+    {literal}
+    
+    function formatTimestamp(ts, tz = 'Europe/Warsaw') {
+		if (!ts || ts == "0") return '-'; // brak timestampu lub 0
+		const date = new Date(ts * 1000);
+		const year = date.toLocaleString('pl-PL', { timeZone: tz, year: 'numeric' });
+		const month = date.toLocaleString('pl-PL', { timeZone: tz, month: '2-digit' });
+		const day = date.toLocaleString('pl-PL', { timeZone: tz, day: '2-digit' });
+		const hour = date.toLocaleString('pl-PL', { timeZone: tz, hour: '2-digit', hour12: false });
+		const minute = date.toLocaleString('pl-PL', { timeZone: tz, minute: '2-digit' });
+		return `${year}-${month}-${day} ${hour}:${minute}`;
+    }
+    function fsecure_suspend_on(fsecure_service_id, customer_id, name) {
+		window.location.href = "?m=metroportfsecureservicesaction&fsecure_service_id=" + fsecure_service_id + "&customer_id=" + customer_id +'&suspend=true';
+    }
+    
+    function fsecure_suspend_off(fsecure_service_id, customer_id, name) {
+		window.location.href = "?m=metroportfsecureservicesaction&fsecure_service_id=" + fsecure_service_id + "&customer_id=" + customer_id +'&unsuspend=true';
+    }
+    
+    function delete_service_fsecure(fsecure_service_id, customer_id, name) {
+		confirmDialog(
+			"Czy chcesz usunąć usługę: <strong>" + name + "</strong>?",
+			null
+		).done(function () {
+			window.location.href = "?m=metroportfsecureservicesaction&fsecure_service_id=" + fsecure_service_id + "&customer_id=" + customer_id +'&DeleteFsecureService=true';
+		});
+		return false;
+    }
+
+    function get_fsecure_customer_services_list(customer_id)
+    {
+		if (LmsUserRightReadOnly_Fsecure_Customer_Access)
+		{
+			$.ajax({
+			url: '?m=metroportfsecureservicecustomer',
+			type: 'POST',
+			data: { get_fsecure_customer_services_list: 1, lmscustomerid: customer_id },
+			dataType: 'json',
+
+			beforeSend: function() {
+				var $tbody = $('.fsecure_customer_service tbody');
+				$tbody.empty().append(`
+				<tr class="loading-row">
+					<td colspan="7" style="text-align:center; padding:10px;">
+					<div class="spinner"></div>
+					<div>Ładowanie danych...</div>
+					</td>
+				</tr>
+				`);
+			},
+			success: function(response) {
+				var $tbody = $('.fsecure_customer_service tbody');
+				$tbody.empty(); // usuwamy spinner
+				var count = (response.data && response.data.length) ? response.data.length : 0;
+				$('#ServicesFsecureCount').text(count);
+				if (response.CustomerExistInMetroport==false)
+				{
+					if(LmsUserRightAdd_Edit_MMMS_User_Access)
+					{
+						var linkHtml = `
+						<a href="#" 
+						onclick="open_dialog_box_api_customer('${customer_id}'); return false;" 
+						id="new_metroport_client" 
+						style="margin-bottom: 0px;">
+						Dodaj Klienta Do Metroport <i class="lms-ui-icon-next fa-fw fa-fw"></i>
+						</a>
+						`;
+					}
+				}
+				else
+				{
+					if (LmsUserRightAdd_Edit_MMMS_Fsecure_Access)
+					{
+						var linkHtml = `
+						<a href="#" 
+						onclick="open_dialog_box_api_new_fsecure_service('${customer_id}'); return false;" 
+						id="new_fsecure_service" 
+						style="margin-bottom: 0px;">
+						Dodaj Usluge F-SECURE <i class="lms-ui-icon-next fa-fw fa-fw"></i>
+						</a>
+						`;
+					}
+				}
+
+				$('#customer_action_fsecure_box').html(linkHtml);
+				if (response.success && response.data.length > 0) {
+				$.each(response.data, function(i, service) {
+				// jeśli status to 'deleted', nie generujemy przycisków
+					if (response.data.length > 0 && service.status!="deleted")
+					{
+						$('#customer_action_fsecure_box').html("");
+					}
+					var actions = '';
+					if (LmsUserRightAdd_Edit_MMMS_Fsecure_Access)
+					{
+						if (service.status !== 'deleted') {
+							if (service.status == 'blocked') {
+
+							actions = `
+								<a onclick="fsecure_suspend_off('${service.id}', '${customer_id}', '${service.secur_servicename}', this);" class="lms-ui-button" title="Włącz usługę." data-title="Włącz usługę."><i class="lms-ui-icon-disconnected"></i></a>
+								<a class="lms-ui-button" title="Edytuj usługę." data-title="Edytuj usługę."
+								onclick="open_dialog_box_api_edit_fsecure_service('${service.id}', '${customer_id}', '${service.secur_servicename}', this,'${service.secur_serviceid}');">
+								<i class="lms-ui-icon-edit"></i>
+								</a>
+								<a class="lms-ui-button" title="Usuń" data-title="Usuń"
+								onclick="delete_service_fsecure('${service.id}', '${customer_id}', '${service.secur_servicename}', this);">
+								<i class="lms-ui-icon-delete"></i>
+								</a>
+							`;
+							} else {
+							actions = `
+								${service.status === 'active' ? `<a onclick="fsecure_suspend_on('${service.id}', '${customer_id}', '${service.secur_servicename}', this);" class="lms-ui-button" title="Wyłącz usługę." data-title="Wyłącz usługę."><i class="lms-ui-icon-connected"></i></a>` : ''}
+								<a class="lms-ui-button" title="Edytuj usługę." data-title="Edytuj usługę."
+								onclick="open_dialog_box_api_edit_fsecure_service('${service.id}', '${customer_id}', '${service.secur_servicename}', this,'${service.secur_serviceid}');">
+								<i class="lms-ui-icon-edit"></i>
+								</a>
+								<a class="lms-ui-button" title="Usuń" data-title="Usuń"
+								onclick="delete_service_fsecure('${service.id}', '${customer_id}', '${service.secur_servicename}', this);">
+								<i class="lms-ui-icon-delete"></i>
+								</a>
+							`;
+							}
+						}
+					}
+					var row = `
+					<tr data-device-id="${service.id}" class="${service.status === 'blocked' ? 'gray-text' : ''}">
+						<td>${service.id}</td>
+						<td>${service.secur_servicename}</td>
+						<td>${service.license_size}</td>
+						<td>${service.status_readable}</td>
+						<td>${formatTimestamp(service.activedate)}</td>
+						<td>${service.status !== 'blocked' ? '-' : formatTimestamp(service.blockdate)}</td>
+						<td>${actions}</td>
+					</tr>
+					`;
+					$tbody.append(row);
+				});
+				} else {
+					$tbody.append(`
+						<tr>
+						<td class="empty-table" colspan="7" style="text-align:center;">
+							<p>Ten klient nie ma przypisanych żadnych usług.</p>
+						</td>
+						</tr>
+					`);
+				}
+			},
+
+			error: function(xhr, status, error) {
+				var $tbody = $('.fsecure_customer_service tbody');
+				$tbody.empty().append(`
+				<tr>
+					<td class="empty-table" colspan="7" style="text-align:center; color:red;">
+					❌ Wystąpił błąd podczas pobierania danych - Sprawdź dostępność serwera.
+					</td>
+				</tr>
+				`);
+				console.error("Błąd AJAX:", status, error);
+			}
+			});
+		}
+		else
+		{
+			var $tbody = $('.fsecure_customer_service tbody');
+			$tbody.append(`
+			<tr>
+				<td class="empty-table" colspan="7" style="text-align:center; color:red;">
+				❌ Brak uprawnień.
+			</td>
+			</tr>
+			`);
+		}
+    }
+       
+    function open_dialog_box_api_customer(lmscustomerid)
+    {
+		$("#api_customer").dialog("open");
+		$("#api_customer").dialog('option', 'title', 'Dodawanie nowego klienta.');
+		$("#api_customer").html('<div id="metroport_message" class="lms-ui-spinner" style="text-align:center; font-size:16px; font-weight:bold; color:#2c3e50; margin:20px 0;">⏳ Trwa aktualizacja danych w Metroport...</div>');
+		$.ajax({
+			url: '?m=metroportcustomerupdate_ajax',   // bieżący adres strony
+			type: 'POST',
+			data: { new_client: 1, lmscustomerid: lmscustomerid},     // dane do wysłania
+			dataType: 'json',            // zakładam że chcesz JSON w odpowiedzi
+				success: function(response) {
+					$("#metroport_message").fadeOut(400, function() {
+						if (response.success == false) {
+							$("#api_customer").html(
+								'<div style="text-align:center; font-size:14px; color:red;">' + response.message_html + '</div>' +
+								'<div style="text-align:center; margin-top:20px;">' +
+									'<button type="button" class="lms-ui-button" onclick="$(\'#api_customer\').dialog(\'close\');">Zamknij</button>' +
+								'</div>'
+							);
+						} else {
+							$("#api_customer").html(
+								response.message_html +
+								'<div style="text-align:center; margin-top:20px;">' +
+									'<button type="button" class="lms-ui-button" onclick="$(\'#api_customer\').dialog(\'close\');">Zamknij</button>' +
+								'</div>'
+							);
+							$('#customer_action_fsecure_box').html('<a href="#" onclick="open_dialog_box_api_new_fsecure_service(\'' + customer_id + '\'); return false;" id="new_fsecure_service" style="margin-bottom: 0px;">Dodaj Usluge F-SECURE <i class="lms-ui-icon-next fa-fw fa-fw"></i></a>');
+				$('#customer_action_metrotv_box').html('<a href="#" onclick="open_dialog_box_api_new_metrotv_account(\'' + customer_id + '\'); return false;"  id="new_metrotv_account" style="margin-bottom: 0px;">Dodaj Konto MetroTV <i class="lms-ui-icon-next fa-fw fa-fw"></i></a>');
+				}
+					});
+				},
+			error: function(xhr, status, error) {
+			console.error("Błąd AJAX:", status, error);
+			$("#metroport_message").text("❌ Wystąpił błąd podczas dodawania klienta");
+			}
+		});
+    }
+    
+    function open_dialog_box_api_new_fsecure_service(lmscustomerid) {
+		var $dialog = $("#api_customer");
+		$dialog.dialog("open");
+		$dialog.dialog('option', 'title', 'Dodawanie nowej usługi F-SECURE.');
+		$dialog.html('<div id="metroport_message" class="lms-ui-spinner" style="text-align:center; font-size:16px; font-weight:bold; color:#2c3e50; margin:20px 0;">⏳ Trwa pobieranie danych z Metroport...</div>');
+
+		var $container = $('#metroport_message');
+
+		// Pobranie listy produktów F-Secure
+		$.ajax({
+			url: '?m=metroportfsecureservicecustomer',
+			type: 'POST',
+			data: { Get_Fsecure_Services_List: true, customer_id: lmscustomerid },
+			dataType: 'json',
+			beforeSend: function() {
+				$container.append(`
+					<div style="text-align:center; padding:12px;">
+					<div class="spinner"></div>
+					<div>Ładowanie danych...</div>
+					</div>
+				`);
+			},
+			success: function(response) {
+			$container.empty();
+			$container.append('<label for="products" style="font-weight:bold; margin-bottom:5px; display:block; text-align:left;">Wybierz produkt F-Secure:</label>');
+			// Select produktów
+			var $select_products = $('<select>', {
+				id: 'products',
+				name: 'products',
+				class: 'lms-ui-select',
+				style: 'width:100%; margin-bottom:10px;'
+			});
+			$select_products.append($('<option>', { value: '', text: '-- wybierz produkt --' }));
+			$.each(response.fsecure, function(index, item) {
+				$select_products.append($('<option>', {
+				value: item.id,
+				text: item.name +' Ilośc licencji:'+item.license_size,
+				title: item.description+' Ilośc licencji:'+item.license_size,
+				'data-license_size': item.license_size
+				}));
+			});
+			$container.append($select_products);
+			$container.append('<p style="font-size:14px; margin-top:10px; color:#333;">Licencja zostanie przesłana na adres email: <strong>' + response.customer.email + '</strong></p>');
+			// Checkbox dodania zobowiązania
+			$container.append('<div style="text-align:left; justify-content:space-between; align-items:center; margin-bottom:10px;"><span style="font-weight:bold;">Dodaj zobowiązanie:  </span><input type="checkbox" id="addtarrif" name="addtarrif"></div>');
+			// Select taryf (ukryty domyślnie)
+			$container.append('<label class="lms_tarif" for="tarrif_lms_id" style="display:none; font-weight:bold; margin-bottom:5px;">Wybierz zobowiązanie do dodania:</label>');
+			var $select_tariffs = $('<select>', {
+				id: 'tarrif_lms_id',
+				name: 'tarrif_lms_id',
+				class: 'lms_tarif',
+				style: 'display:none; width:100%; margin-bottom:10px;'
+			});
+			$select_tariffs.append($('<option>', { value: '', text: '-- Wybierz produkt z listy taryf --' }));
+
+			// Pobranie listy taryf
+			$.ajax({
+				url: '?m=metroportfsecureservicecustomer',
+				type: 'POST',
+				data: { Get_tarfiffs: true },
+				dataType: 'json',
+				success: function(response_tarrifs) {
+				$.each(response_tarrifs, function(index, item_tarrif) {
+					var $option = $('<option>', {
+					value: item_tarrif.id,
+					text: item_tarrif.name + ' ( Cena_Brutto: ' + item_tarrif.value + ' ' + item_tarrif.currency + ' )',
+					title: item_tarrif.name + ' ( Cena_Brutto: ' + item_tarrif.value + ' ' + item_tarrif.currency + ' )'
+					});
+					$option.attr({
+					'data-tariffid': item_tarrif.id,
+					'data-count': 1,
+					'data-datefrom': item_tarrif.datefrom,
+					'data-dateto': item_tarrif.dateto,
+					'data-currency': item_tarrif.currency,
+					'data-discount_type': 1,
+					'data-taxid': item_tarrif.taxid,
+					'data-period': item_tarrif.period,
+					'data-netvalue': item_tarrif.netvalue,
+					'data-value': item_tarrif.value
+					});
+					$select_tariffs.append($option);
+				});
+				init_datepickers('.lms-ui-date');
+				},
+				error: function(xhr, status, error) {
+				console.error("Błąd AJAX pobierania taryf:", status, error);
+				$container.append('<div style="color:red;">❌ Wystąpił błąd podczas pobierania taryf</div>');
+				}
+			});
+
+			$container.append($select_tariffs);
+			// Dodatkowe pola dat i dni
+			$container.append('<div id="tariff_inputs" class="lms_tarif" style="display:none; margin-bottom:10px;">' +
+				'<div style="display:flex; gap:10px; align-items:center; margin-top:5px;">' +
+				'<span>Naliczaj od:</span><input type="text" class="lms-ui-date" size=10 id="tariff_from" name="tariff_from">' +
+				'<span>Naliczaj do:</span><input type="text" class="lms-ui-date" size=10 id="tariff_to" name="tariff_to">' +
+				'<span>Naliczaj w dniu:</span><input type="number" id="tariff_day" name="tariff_day" style="width:45px;" value="1" min="1" max="32">' +
+				'</div></div>'
+			);
+
+			// Przyciski
+			var $buttonSave = $('<button>', { type: 'button', text: 'Zapisz', class: 'lms-ui-button save_fsecure_product', style:'margin-top:5px; margin-right:5px;' });
+			var $buttonCancel = $('<button>', { type: 'button', text: 'Anuluj', class: 'lms-ui-button', style:'margin-top:5px;' });
+			var $buttonClose = $('<button>', { type: 'button', text: 'Zamknij', class: 'lms-ui-button', style:'margin-top:5px;' });
+			$container.append($buttonSave, $buttonCancel);
+			$buttonCancel.on('click', function(){ $dialog.dialog("close"); });
+			$buttonClose.on('click', function(){ location.reload(); $dialog.dialog("close"); });
+
+			// Obsługa przycisku Zapisz
+			$container.on('click', '.save_fsecure_product', function() {
+				var selectedVal = $('#products').val();
+				if (!selectedVal) {
+					$container.append('<div class="error-message" style="color:red; font-weight:bold; margin-top:5px;">❌ Wybierz produkt!</div>');
+					return;
+				}
+
+				var addtarrif = $('#addtarrif').prop('checked') ? 1 : 0;
+				var tarrif_lms_id = $('#tarrif_lms_id').val();
+				var $selected_tariff = $('#tarrif_lms_id').find('option[value="'+tarrif_lms_id+'"]');
+
+				var data_assignment = {
+				'tariffid': $selected_tariff.attr('data-tariffid'),
+				'at': $('#tariff_day').val()  || 1,
+				'count': $selected_tariff.data('count') || 1,
+				'currency': $selected_tariff.data('currency'),
+				'discount_type': $selected_tariff.data('discount_type'),
+				'taxid': $selected_tariff.data('taxid'),
+				'align-periods': $selected_tariff.data('align-periods'),
+				'netvalue': $selected_tariff.data('netvalue'),
+				'value': $selected_tariff.data('value'),
+				'period': $selected_tariff.data('period')  || 1,
+				'tags': $selected_tariff.data('tags'),
+				'datefrom': $('#tariff_from').val()  || 0,
+				'dateto': $('#tariff_to').val() || 0,
+				'tariff_day': $('#tariff_day').val()  || 1,
+				'tarrif_lms_id': tarrif_lms_id
+				};
+
+				var  ajaxData = $.extend({
+					new_service_fsecure_for_customer: true,
+					customer_id: lmscustomerid,
+					productId: selectedVal,
+					license_size: $('#products').find(':selected').data('license_size'),
+					addtarrif: addtarrif
+				}, data_assignment);
+
+				$.ajax({
+					url: '?m=metroportfsecureservicesaction',
+					type: 'POST',
+					data: ajaxData,
+
+					dataType: 'json',
+					success: function(resp) {
+						$container.empty();
+						if(resp.success) {
+						$container.append(resp.message_html);
+						} else {
+						$container.append(resp.message_html || '<div style="color:red;">Nieznany błąd</div>');
+						}
+						$container.append($buttonClose);
+					},
+					error: function(xhr, status, error) {
+						$container.empty();
+						$container.append('<div style="color:red;">Błąd serwera: '+error+'</div>');
+						$container.append($buttonClose);
+					}
+				});
+			});
+			},
+				error: function(xhr, status, error) {
+				console.error("Błąd AJAX pobierania produktów:", status, error);
+				$container.text("❌ Wystąpił błąd podczas pobierania produktów");
+			}
+		});
+    }
+
+    function open_dialog_box_api_edit_fsecure_service(fsecure_service_id,lmscustomerid,secur_servicename, x,secur_serviceid)
+    {
+		$("#api_customer").dialog("open");
+		$("#api_customer").dialog('option', 'title', 'Edycja usługi F-SECURE.');
+		$("#api_customer").html('<div id="metroport_message" class="lms-ui-spinner" style="text-align:center; font-size:16px; font-weight:bold; color:#2c3e50; margin:20px 0;">⏳ Trwa pobieranie danych z Metroport...</div>');
+		//Pobiera listę produktów
+        $.ajax({
+            url: '?m=metroportfsecureservicecustomer',
+            type: 'POST',
+            data: { Get_Fsecure_Services_List: true, customer_id: lmscustomerid },
+            dataType: 'json',
+            success: function(response) {
+                var $container = $('#metroport_message');
+                $container.empty(); // wyczyść diva
+                $container.append('<label for="products" style="font-weight:bold; margin-bottom:5px; display:block;">Wybierz produkt F-Secure:</label>');
+               
+                // Utwórz select
+                var $select = $('<select>', { 
+                    id: 'products', 
+                    name: 'products', 
+                    class: 'lms-ui-select', 
+                    style: 'width:100%; margin-bottom:10px;' // ładny wygląd
+                });
+
+                // Pusta opcja
+                $select.append($('<option>', { value: '', text: '-- wybierz produkt --' }));
+
+                // Dodaj produkty z JSON
+                $.each(response.fsecure, function(index, item) {
+                    $select.append($('<option>', {
+                        value: item.id,
+                        text: item.name +' Ilośc licencji:'+item.license_size,
+                        title: item.description+' Ilośc licencji:'+item.license_size,
+                        'data-license_size': item.license_size
+                    }));
+                });
+				$select.val(secur_serviceid);
+                $container.append($select);
+                $container.append(
+                  '<p style="font-size:14px; margin-top:10px; color:#333;">' +
+                    'Licencja zostanie przesłana na adres email: ' +
+                    '<strong>' + response.customer.email + '</strong>' +
+                  '</p>'
+                );
+
+                // Dodaj przycisk Zapisz
+                var $buttonSave = $('<button>', {
+                    type: 'button',
+                    text: 'Zapisz',
+                    class: 'lms-ui-button save_fsecure_product',
+                    id: 'save_fsecure_product',
+                    style: 'margin-top:5px; margin-right:5px;'
+                });
+                $container.append($buttonSave);
+
+                // Dodaj przycisk Anuluj
+                var $buttonCancel = $('<button>', {
+                    type: 'button',
+                    text: 'Anuluj',
+                    class: 'lms-ui-button',
+                    id: 'cancel_fsecure_product',
+                    style: 'margin-top:5px;'
+                });
+                var $buttonClose = $('<button>', {
+                    type: 'button',
+                    text: 'Zamknij',
+                    class: 'lms-ui-button',
+                    id: 'close_fsecure_product',
+                    style: 'margin-top:5px;'
+                });
+
+                $container.append($buttonCancel);
+
+                // Obsługa kliknięcia Anuluj
+                $buttonCancel.on('click', function(){
+                    $("#api_customer").dialog("close");
+                });
+                $buttonClose.on('click', function(){
+                    location.reload();
+                    $("#api_customer").dialog("close");
+                });
+                $('#metroport_message').on('click', '.save_fsecure_product', function() {
+                var $container = $('#metroport_message');
+                var $select = $('#products');
+                var $selected = $select.find(':selected');
+                var selectedVal = $selected.val();
+
+                // Usuń poprzedni komunikat
+                $container.find('.error-message').remove();
+
+                if (!selectedVal) {
+                    // Wyświetl komunikat pod selectem
+                    $container.append('<div class="error-message" style="color:red; font-weight:bold; margin-top:5px;">❌ Wybierz produkt!</div>');
+                    return;
+                }
+
+                var licenseSize = $selected.data('license_size'); // pobranie data-license_size
+
+                $.ajax({
+                    url: '?m=metroportfsecureservicesaction',
+                    type: 'POST',
+                    data: {
+                        edit_service_fsecure_for_customer: true,
+						fsecure_service_id:fsecure_service_id,
+                        customer_id: lmscustomerid,
+                        productId: selectedVal,
+                        license_size: licenseSize
+                    },
+                    dataType: 'json',
+                    success: function(resp) {
+                        if(resp.success) {
+                            $container.empty(); // wyczyść diva
+                            // Dodaj opis przed selectem
+                            $container.append(resp.message_html);
+                            $container.append($buttonClose);
+                        } else {
+                            var err = resp.error || resp.body || 'Nieznany błąd';
+                            $container.empty(); // wyczyść diva
+                            $container.append(resp.message_html);
+                            $container.append($buttonClose);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                            $container.empty(); // wyczyść diva
+                            $container.append(resp.message_html);
+                            $container.append($buttonClose);                      
+                            console.error(status, error);
+                    }
+                });
+            });
+            },
+            error: function(xhr, status, error) {
+                console.error("Błąd AJAX:", status, error);
+                $("#metroport_message").text("❌ Wystąpił błąd podczas pobierania produktów");
+            }
+        });
+    }
+</script>
+{/literal}

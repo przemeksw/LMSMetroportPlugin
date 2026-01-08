@@ -1,0 +1,1815 @@
+<style>
+/* --- Ogólne (spinner, badge, podstawowe klasy) --- */
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    margin: auto;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+}
+
+.gray-text {
+    color: #888;
+}
+/* ukryj pusty badge (jak w bootstrap) */
+.badge:empty {
+  display: none;
+}
+
+/* pill */
+.badge-pill {
+  padding-right: 0.6em;
+  padding-left: 0.6em;
+  border-radius: 10rem;
+}
+
+/* kolory podstawowe (przykład) */
+.badge-primary       { background-color: #007bff; }
+.badge-secondary     { background-color: #6c757d; }
+.badge-success       { background-color: #28a745; }
+.badge-danger        { background-color: #dc3545; }
+.badge-warning       { background-color: #ffc107; color: #212529; }
+.badge-info          { background-color: #17a2b8; }
+.badge-light         { background-color: #f8f9fa; color: #212529; }
+.badge-dark          { background-color: #343a40; }
+
+a.badge:focus, a.badge:hover {
+  text-decoration: none;
+  color: #fff;
+}
+
+/* drobne klasy metrotv pierwotne (zachowanie kompatybilności) */
+.metrotv_customer_service .address-row { background:#e9eef3; font-weight:600; }
+.metrotv_customer_service .package-row   { background:#f7f9fb; padding-left:8px; }
+.metrotv_customer_service .meta { color:#666; font-size:0.9em; }
+
+/* ---------------- Ustawienia globalne - BEZPIECZNE BOX-SIZING ---------------- */
+/* Aby width:100% działało poprawnie i zapobiec overflowom */
+.metrotv_customer_service,
+.metrotv_customer_service * {
+  box-sizing: border-box;
+}
+
+/* ---------------- Główne reguły tabeli i karty ---------------- */
+.metrotv_customer_service,
+.metrotv_customer_service td,
+.metrotv_customer_service th {
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  color: #222;
+  vertical-align: middle;
+}
+
+/* Główna tabela - collapse nie musi być strict; karty mają własne marginesy */
+.metrotv_customer_service {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: separate;
+  background: transparent;
+  overflow-x: hidden; /* zapobiega wychodzeniu layoutu */
+}
+
+/* Każde konto jako wrapper (tr) zawiera jedną komórkę z "kartą" */
+.metrotv_customer_service tr.account-wrapper td {
+  padding: 8px 0; /* pionny padding; brak bocznego, żeby karta mogła wypełnić całą szerokość */
+  background: transparent;
+  border: none;
+}
+
+/* Karta konta - pełna szerokość, brak bocznych marginesów, tylko odstęp pionowy */
+.metrotv_customer_service .account-card {
+  width: 100%;
+  max-width: 100%;
+  margin: -2px 0;                /* tylko pionowy odstęp między kartami */
+  padding: 10px;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  overflow: hidden;              /* chroni przed wychodzeniem poszczególnych elementów */
+}
+
+/* Wewnętrzna tabela w karcie */
+.metrotv_customer_service .inner-account-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* WAŻNE: zapobiega rozszerzaniu kolumn przez długie treści */
+}
+.metrotv_customer_service .inner-account-table col:first-child  { width: 15%; }
+.metrotv_customer_service .inner-account-table col:nth-child(2) { width: 50%; }
+/* dodatkowa kolumna price */
+.metrotv_customer_service .inner-account-table col:nth-child(3) { width: 12%; }
+.metrotv_customer_service .inner-account-table col:last-child   { width: 36%; }
+
+.metrotv_customer_service .inner-account-table td {
+  padding: 8px;
+  border: none;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal; /* pozwala na zawijanie długich nazw/przycisków */
+}
+
+/* Kolumny - label (monospace dla drzewka), meta, actions */
+.metrotv_customer_service .inner-account-table td.label {
+  font-family: monospace;
+  white-space: pre;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.metrotv_customer_service .inner-account-table td.meta {
+  color: #444;
+  line-height: 1.3;
+}
+.metrotv_customer_service .inner-account-table td.actions {
+  text-align: right;
+  white-space: normal;
+  min-width: 0; /* istotne przy flex w actions */
+}
+
+/* Komórka z ceną (wyrównana do prawej, pogrubiona) */
+.metrotv_customer_service .inner-account-table td.price-cell {
+  text-align: right;
+  font-weight: 700;
+  white-space: nowrap;
+  padding-right: 8px;
+  color: #262626;
+}
+
+/* ---------------- Podsumowanie wiersza sekcji (DODANE) ---------------- */
+.metrotv_customer_service .inner-account-table tr.summary-row td {
+  background-color: rgba(0,0,0,0.03);
+  font-weight: 700;
+  padding-top: 10px;
+  padding-bottom: 6px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  color: #222;
+}
+.metrotv_customer_service .inner-account-table tr.summary-row td.meta {
+  color: #222;
+}
+.metrotv_customer_service .inner-account-table tr.summary-row td.price-cell {
+  text-align: right;
+  color: #222;
+}
+
+/* ---------------- Kolorowanie wierszy (delikatne) ---------------- */
+.metrotv_customer_service .inner-account-table tr.location-row td {
+  background-color: rgba(240,248,255,0.6); /* konto - delikatny błękit */
+  color: #0b3a66;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.metrotv_customer_service .inner-account-table tr.package-row td {
+  background-color: rgba(255,249,230,0.65); /* pakiet - delikatna żółć */
+  color: #5a4900;
+}
+.metrotv_customer_service .inner-account-table tr.stb-row td {
+  background-color: rgba(246,255,246,0.7); /* stb - delikatna zieleń */
+  color: #145214;
+}
+/* ---------------- Kolorowanie wierszy (delikatne) ---------------- */
+.metrotv_customer_service .inner-account-table tr.location-row-block td {
+  background-color: rgba(240,248,255,0.6); /* konto - delikatny błękit */
+  color: rgba(215, 44, 44, 1); /* intensywny czerwony */
+  border-radius: 6px;
+  font-weight: 700;
+}
+.metrotv_customer_service .inner-account-table tr.package-row-block td {
+  background-color: rgba(255,249,230,0.65); /* pakiet - delikatna żółć */
+  color: #5a4900;
+}
+.metrotv_customer_service .inner-account-table tr.stb-row-block td {
+  background-color: rgba(246,255,246,0.7); /* stb - delikatna zieleń */
+  color: #245214;
+}
+/* Delikatne separatory między wierszami wewnętrznymi */
+.metrotv_customer_service .inner-account-table tr + tr td {
+  border-top: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Zaokrąglenia rogów - pierwsze i ostanie TD wewnętrznej tabeli */
+.metrotv_customer_service .inner-account-table tr:first-child td:first-child { border-top-left-radius: 6px; }
+.metrotv_customer_service .inner-account-table tr:first-child td:last-child  { border-top-right-radius: 6px; }
+.metrotv_customer_service .inner-account-table tr:last-child td:first-child  { border-bottom-left-radius: 6px; }
+.metrotv_customer_service .inner-account-table tr:last-child td:last-child   { border-bottom-right-radius: 6px; }
+
+/* ---------------- Responsywne przyciski akcji ---------------- */
+/* akcje jako flex, z możliwością zawijania */
+.metrotv_customer_service .inner-account-table td.actions {
+  display: flex;
+  flex-wrap: wrap;         /* pozwala przyciskom przechodzić do nowego wiersza */
+  gap: 6px;                /* odstęp między przyciskami */
+  justify-content: flex-end;
+  align-items: center;
+  min-width: 0;            /* potrzebne żeby flex-itemy mogły się skurczyć */
+}
+
+/* na bardzo wąskich ekranach - stosujemy stack (kolumna) i szerokie przyciski */
+@media (max-width: 520px) {
+  .metrotv_customer_service {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .metrotv_customer_service .inner-account-table col:first-child  { width: 30%; }
+  .metrotv_customer_service .inner-account-table col:nth-child(2) { width: 50%; }
+  .metrotv_customer_service .inner-account-table col:last-child   { width: 20%; }
+
+  .metrotv_customer_service .inner-account-table td.actions {
+    justify-content: flex-start;
+  }
+  .metrotv_customer_service .inner-account-table td.actions button,
+  .metrotv_customer_service .inner-account-table td.actions .btn-issue-stb {
+    width: 100%;
+    display: block;
+  }
+}
+
+/* ---------------- Hover i drobne animacje ---------------- */
+.metrotv_customer_service .inner-account-table td {
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.metrotv_customer_service .inner-account-table tr.location-row:hover td {
+  background-color: rgba(224,244,255,0.98); /* jaśniejszy błękit */
+  color: #06324a;
+  cursor: default;
+}
+.metrotv_customer_service .inner-account-table tr.package-row:hover td {
+  background-color: rgba(255,245,220,0.98); /* jaśniejsza żółć */
+  color: #4a3f00;
+  cursor: default;
+}
+.metrotv_customer_service .inner-account-table tr.stb-row:hover td {
+  background-color: rgba(235,255,235,0.98); /* jaśniejsza zieleń */
+  color: #0b6b18;
+  cursor: default;
+}
+
+/* Klikalne wiersze (jeżeli chcesz, aby wskazywały, że są interaktywne) */
+.metrotv_customer_service .inner-account-table tr.clickable-row:hover td {
+  cursor: pointer;
+}
+
+/* Drobne efekty dla przycisków */
+.metrotv_customer_service .inner-account-table td.actions button {
+  transition: background-color 0.12s ease, transform 0.06s ease;
+}
+.metrotv_customer_service .inner-account-table td.actions button:hover {
+  background-color: #f3f3f3;
+  transform: translateY(-1px);
+}
+
+.metrotv_customer_service .account-card {
+  -webkit-overflow-scrolling: touch;
+  overflow-wrap: anywhere;
+}
+
+/* Ogólne tło jak na obrazku; tylko input/select mają białe pola */
+#api_customer_metrotv .metrotv-wrap {
+    font-family: Arial, sans-serif;
+    background: #cbb892; /* beżowe tło podobne do obrazka */
+    padding: 14px;
+    border-radius: 4px;
+    color: #222;
+}
+#api_customer_metrotv .metrotv-title {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    font-weight:700;
+    color:#17334a;
+}
+#api_customer_metrotv .metrotv-section { margin-bottom: 12px; }
+#api_customer_metrotv .metrotv-label { display:block; margin-bottom:6px; font-size:13px; font-weight:600; color:#17334a; }
+/* Białe tła tylko dla input i select */
+#api_customer_metrotv .lms-input, #api_customer_metrotv .lms-select {
+    width:100%;
+    padding:8px 10px;
+    border:1px solid #6b5f4b;
+    border-radius:3px;
+    box-sizing:border-box;
+    font-size:14px;
+    background:#fff; /* WHITE for fields only */
+    color:#111;
+}
+#api_customer_metrotv .lms-input:focus, #api_customer_metrotv .lms-select:focus {
+    outline:none;
+    box-shadow:0 0 0 3px rgba(11,98,164,0.06);
+    border-color:#0b62a4;
+}
+#api_customer_metrotv .small-note {
+    font-size:13px;
+    color:#2f2f2f;
+    text-align:center;
+    margin-top:8px;
+}
+#api_customer_metrotv .commit-row {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
+    color:#17334a;
+    font-weight:600;
+}
+#api_customer_metrotv .buttons {
+    margin-top:14px;
+    text-align:center; /* centered buttons like on image */
+}
+/* Buttony - beżowe, ramka */
+#api_customer_metrotv .btn {
+    display:inline-block;
+    padding:8px 14px;
+    border-radius:3px;
+    cursor:pointer;
+    font-size:14px;
+    margin:0 6px;
+    background:#e8dcc7;
+    border:1px solid #8b7a60;
+    color:#111;
+}
+#api_customer_metrotv .btn:active { transform:translateY(1px); }
+/* małe odstępy dla pól numeru domu/mieszkania (side-by-side) */
+#api_customer_metrotv .row { display:flex; gap:8px; margin-top:8px; }
+#api_customer_metrotv .col { flex:1; }
+@media (max-width:700px) {
+    #api_customer_metrotv .row { flex-direction:column; }
+}
+
+.button-lms {
+    display: inline-flex;
+    align-items: center;
+    background: #ede5d1;
+    border: 2px solid #88806a;
+    margin: 0 2px;
+    padding: 0 24px;
+    font-size: 16px;
+    color: #181714;
+    border-radius: 4px;
+    cursor: pointer;
+    min-height: 36px;
+    min-width: 100px;
+    font-family: inherit;
+    transition: background 0.18s, box-shadow 0.18s;
+    box-sizing: border-box;
+    font-weight: 500;
+}
+
+.button-lms:hover, .button-lms:focus {
+    background: #d2c7a6;
+    box-shadow: 0 2px 6px rgba(80,66,32,0.05);
+    outline: none;
+}
+.ui-dialog, .ui-dialog-content { overflow: visible !important; }
+#api_customer_metrotv .chosen-container {
+    width: 100% !important;
+    min-width: 300px; /* Możesz dostosować */
+    max-width: 100%;
+}
+
+#api_customer_metrotv .chosen-drop {
+    width: 100% !important;
+}
+/* Dopasuj szerokość i wysokość Chosen do standardowego selecta */
+.chosen-container .chosen-single {
+    height: 38px !important;
+    line-height: 38px !important;
+    font-size: 16px !important;
+    border-radius: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding-left: 8px !important;
+}
+
+.chosen-container .chosen-search input {
+    height: 38px !important;
+    font-size: 16px !important;
+    border-radius: 4px !important;
+    padding-left: 8px !important;
+}
+
+.chosen-container .chosen-drop {
+    font-size: 16px !important;
+}
+</style>
+<TABLE class="lmsbox lms-ui-tab-container lms-ui-sortable metrotv_customer_services" id="metrotv_customer_services">
+	<COLGROUP>
+		<COL style="width: 99%;">
+		<COL style="width: 1%;">
+	</COLGROUP>
+	<THEAD>
+	    <TR id="metrotv_customer_services-header" class="hand lmsbox-titlebar" data-lmsbox-content="metrotv_customer_services-panel" >
+		    <TD class="bold">
+			    <i class="lms-ui-icon-tv lms-ui-sortable-handle ui-sortable-handle"></i>
+			    Usługi MetroTv (Metroport) (<span id="ServicesMetrotvCount"></span>):
+		    </TD>
+		    <TD class="text-right nobr">
+			<div id='customer_action_metrotv_box'></div>
+		    </TD>
+	    </TR>
+	</THEAD>
+	<TBODY id="metrotv_customer_services-panel" class="lms-ui-multi-check" style="display: none;">
+	    <TR>
+		<TD colspan="3">
+		    <!-- Zaktualizowane: wewnętrzna tabela ma 4 kolumny (label | meta | price | actions) -->
+		    <TABLE class="lmsbox-inner keys-table metrotv_customer_service">
+			<COLGROUP>
+				<COL style="width: 15%;">
+				<COL style="width: 40%;">
+				<COL style="width: 12%;">
+				<COL style="width: 40%;">
+			</COLGROUP>
+			<THEAD>
+			</THEAD>
+			<TBODY>
+			</TBODY>
+		    </TABLE>
+		</TD>
+	    </TR>
+	</TBODY>
+</TABLE>
+
+<div  style="display:none; font-size:12px;" id="api_customer_metrotv" title=""></div>
+    {literal}
+<script>
+    {/literal}
+    (function() {
+		$("#metrotv_customer_services-panel").toggle(getStorageItem("metrotv_customer_services-panel", "local") == "1");
+    })();
+    var customerID = "{$LmsCustomerId|escape:'javascript'}";
+    var LmsUserRightAdd_Edit_MMMS_User_Access = "{ConfigHelper::checkPrivilege('metroportcustomerupdate_ajax')|escape:'javascript'}";
+    var LmsUserRightAdd_Edit_MMMS_Fsecure_Access = "{ConfigHelper::checkPrivilege('metroportmetrotvservicesaction')|escape:'javascript'}";  
+    var LmsUserRightReadOnly_Fsecure_Customer_Access = "{ConfigHelper::checkPrivilege('metroport_readonly')|escape:'javascript'}";
+    
+    $(document).ready(function()
+    {
+        $("#api_customer_metrotv").dialog(
+        {
+            autoOpen: false,
+            width:"740px",
+            position: { my: 'top', at: 'top+150' },
+        });
+	get_metrotv_customer_services_list(customer_id);
+    });
+    
+    {literal}
+    
+    function formatTimestamp(ts, tz = 'Europe/Warsaw') {
+	if (!ts || ts == "0") return '-'; // brak timestampu lub 0
+	const date = new Date(ts * 1000);
+	const year = date.toLocaleString('pl-PL', { timeZone: tz, year: 'numeric' });
+	const month = date.toLocaleString('pl-PL', { timeZone: tz, month: '2-digit' });
+	const day = date.toLocaleString('pl-PL', { timeZone: tz, day: '2-digit' });
+	const hour = date.toLocaleString('pl-PL', { timeZone: tz, hour: '2-digit', hour12: false });
+	const minute = date.toLocaleString('pl-PL', { timeZone: tz, minute: '2-digit' });
+	return `${year}-${month}-${day} ${hour}:${minute}`;
+    }
+    
+    function formatPrice(value) {
+	value = value.replace(',', '.');
+	value = value.trim();
+	// Jeśli wpisano liczbę bez części dziesiętnej
+	if (/^\d+$/.test(value)) {
+	    return value + '.00';
+	}
+	if (/^\d+\.\d$/.test(value)) {
+	    return value + '0';
+	}
+	if (/^\d+\.\d{2}$/.test(value)) {
+	    return value;
+	}
+	if (/^\d+\.\d+$/.test(value)) {
+	    let floatVal = parseFloat(value);
+	    return floatVal.toFixed(2);
+	}
+	return '';
+    }
+    
+    function open_dialog_box_api_new_metrotv_account(lmscustomerid) {
+	var $dialog = $("#api_customer_metrotv");
+	$dialog.dialog("open");
+	$dialog.dialog('option', 'title', 'Dodawanie konta MetroTV.');
+
+	// zapewniamy wrapper z id metroport_message (jak we wzorze)
+	$dialog.html('<div id="metroport_message" class="lms-ui-spinner" style="text-align:center; font-size:16px; font-weight:bold; color:#2c3e50; margin:20px 0;">⏳ Trwa pobieranie danych z Metroport...</div>');
+
+	// TU trzymamy referencję i będziemy do niego appendować wszystko (wzór F-Secure)
+	var $container = $('#metroport_message');
+
+	// Pobierz listę sieci / danych
+	$.ajax({
+	    url: '?m=metroportmetrotvservicesaction',
+	    type: 'POST',
+	    data: { get_metrotv_customer_new_account_data: 1, lmscustomerid: lmscustomerid },
+	    dataType: 'json',
+	    beforeSend: function() {
+		// loader w containerze (append, nie nadpisujemy wrappera)
+		$container.empty().append(`
+		    <div style="text-align:center; padding:12px;">
+			<div class="spinner"></div>
+			<div>Ładowanie danych...</div>
+		    </div>
+		`);
+	    },
+	    success: function(response) {
+		// wyciągnij dane
+		var metroport_user_id = (response && response.userid && response.userid.metroport_user_id) ? response.userid.metroport_user_id : '';
+		var addrObj = {};
+		if (response.address && typeof response.address === 'object') {
+		    var addrKeys = Object.keys(response.address || {});
+		    if (addrKeys.length) addrObj = response.address[addrKeys[0]] || {};
+		}
+
+		// zbuduj HTML formularza (BEZ wrappera #metroport_message)
+		var innerHtml = `
+		    <style>
+		    #api_customer_metrotv .lms-input.invalid, 
+		    #api_customer_metrotv .lms-select.invalid { border-color: #d9534f !important; box-shadow: none; }
+		    #api_customer_metrotv .metroport-error { color:#a94442; background:#f2dede; border:1px solid #ebcccc; padding:8px 10px; border-radius:3px; margin-bottom:10px; font-size:13px; }
+		    #api_customer_metrotv .metroport-error strong { font-weight:700; }
+		    .metrotv-wrap { padding:6px 4px; }
+		    .metrotv-section { margin-bottom:10px; }
+		    .metrotv-label { display:block; margin-bottom:4px; font-size:13px; color:#333; }
+		    .row { display:flex; gap:10px; align-items:flex-start; margin-top:6px; }
+		    .col { flex:1; }
+		    .small-note { font-size:12px; color:#666; margin-top:6px; }
+		    </style>
+
+		    <div class="metrotv-wrap">
+			<h3 class="metrotv-title">Dodawanie nowego konta MetroTV</h3>
+			<div id="metroport-error-holder"></div>
+
+			<div class="metrotv-section">
+			    <label class="metrotv-label" for="network-select">Wybierz sieć:</label>
+			    <select id="network-select" class="lms-select" style="width:100%;">
+				<option value="">-- wybierz sieć --</option>
+			    </select>
+			    <div id="network-info" class="small-note">Wybierz produkt / sieć z listy powyżej.</div>
+			</div>
+
+			<div class="metrotv-section">
+			    <label class="metrotv-label">Adres usługi:</label>
+
+			    <label class="metrotv-label" for="location_city_name" style="font-weight:500; font-size:12px; margin-top:6px;">Miasto</label>
+			    <input type="text" id="location_city_name" class="lms-input" value="${(addrObj.location_city_name || '')}">
+
+			    <label class="metrotv-label" for="location_zip" style="font-weight:500; font-size:12px; margin-top:8px;">Kod pocztowy</label>
+			    <input type="text" id="location_zip" class="lms-input" value="${(addrObj.location_zip || '')}">
+
+			    <label class="metrotv-label" for="location_short_street_name" style="font-weight:500; font-size:12px; margin-top:8px;">Ulica</label>
+			    <input type="text" id="location_short_street_name" class="lms-input" value="${(addrObj.location_short_street_name || '')}">
+
+			    <div class="row">
+				<div class="col">
+				    <label class="metrotv-label" for="location_house" style="font-weight:500; font-size:12px;">Nr domu</label>
+				    <input type="text" id="location_house" class="lms-input" value="${(addrObj.location_house || '')}">
+				</div>
+				<div style="width:130px;">
+				    <label class="metrotv-label" for="location_flat" style="font-weight:500; font-size:12px;">Nr mieszkania</label>
+				    <input type="text" id="location_flat" class="lms-input" value="${(addrObj.location_flat || '')}">
+				</div>
+			    </div>
+			</div>
+
+			<div id="metrotv-buttons-placeholder" style="margin-top:12px; text-align:center;"></div>
+		    </div>
+		`;
+
+		// appendujemy do istniejącego wrappera (tak jak we wzorze)
+		$container.empty().append(innerHtml);
+
+		// ustawiamy z powrotem referencję do wrappera (pewność)
+		$container = $('#metroport_message');
+
+		// przygotuj przyciski jako elementy jQuery (jak we wzorze F-Secure)
+		var $buttonSave = $('<button>', { type: 'button', text: 'Zapisz', class: 'lms-ui-button save_metrotv_account', style: 'margin-right:8px;' });
+		var $buttonCancel = $('<button>', { type: 'button', text: 'Anuluj', class: 'lms-ui-button' });
+		var $buttonClose = $('<button>', { type: 'button', text: 'Zamknij', class: 'lms-ui-button', style: 'margin-left:8px;' });
+
+		// dopinamy przyciski do placeholder-a
+		$('#metrotv-buttons-placeholder').append($buttonSave, $buttonCancel);
+
+		// zachowanie Anuluj i Zamknij
+		$buttonCancel.on('click', function() {
+		    $('#api_customer_metrotv').empty();
+		    $dialog.dialog('close');
+		});
+		$buttonClose.on('click', function() {
+		    get_metrotv_customer_services_list(customerID);
+		    $dialog.dialog('close');
+		});
+
+		// funkcja błędu (jak we wcześniejszym kodzie)
+		var metroportErrorTimeoutId = null;
+		function showMetroportError(message) {
+		    if (metroportErrorTimeoutId) { clearTimeout(metroportErrorTimeoutId); metroportErrorTimeoutId = null; }
+		    var $holder = $('#metroport-error-holder');
+		    var errHtml = '<div class="metroport-error"><strong>' + $('<div>').text(message).html() + '</strong></div>';
+		    $holder.stop(true, true).html(errHtml).show();
+		    metroportErrorTimeoutId = setTimeout(function() {
+			$holder.fadeOut(250, function() { $(this).empty().show(); });
+			$('.lms-input, .lms-select').removeClass('invalid');
+			metroportErrorTimeoutId = null;
+		    }, 10000);
+		}
+
+		// wypełnij select sieci
+		var $select = $('#network-select');
+		if (Array.isArray(response.networks)) {
+		    response.networks.forEach(function(net) {
+			var total = Number(net.TotalSTBs), size = Number(net.size);
+			if (!isNaN(total) && !isNaN(size) && total < size) {
+			    var addrForDisplay = (net.address_long && String(net.address_long).trim() !== '') ? net.address_long : net.address;
+			    var text = net.name + ' (' + addrForDisplay + '/' + net.mask_prefix + ')';
+			    var $opt = $('<option>').val(net.id).text(text).data('network', net);
+			    $select.append($opt);
+			}
+		    });
+		}
+
+		// info o sieci po wyborze
+		$('#network-select').on('change', function() {
+		    var net = $(this).find('option:selected').data('network') || null;
+		    var $info = $('#network-info');
+		    if (!net) { $info.text('Wybierz produkt / sieć z listy powyżej.'); return; }
+		    var infoText = 'ID: ' + (net.id || '-') + ' | transport: ' + (net.transport || '-') + ' | STB: ' + (net.TotalSTBs || '0') + '/' + (net.size || '-');
+		    $info.text(infoText);
+		});
+
+		// delegacja: obsługa zapisu na wrapperze (dokładnie jak we wzorze)
+		$container.on('click', '.save_metrotv_account', function() {
+		    $('#metroport-error-holder').empty();
+		    $('.lms-input, .lms-select').removeClass('invalid');
+
+		    var fields = [
+			{ el: $('#network-select'), name: 'Sieć' },
+			{ el: $('#location_city_name'), name: 'Miasto' },
+			{ el: $('#location_zip'), name: 'Kod pocztowy' },
+			{ el: $('#location_house'), name: 'Nr domu' }
+		    ];
+
+		    var invalids = [];
+		    for (var i = 0; i < fields.length; i++) {
+			var $el = fields[i].el;
+			var val = ($el.val() || '').toString().trim();
+			if (val === '') { invalids.push(fields[i]); $el.addClass('invalid'); }
+		    }
+		    if (invalids.length) { showMetroportError('Proszę wypełnić wszystkie pola oznaczone na czerwono.'); invalids[0].el.focus(); return; }
+
+		    var payload = {
+			lmscustomerid: lmscustomerid,
+			metroport_user_id: metroport_user_id,
+			network_id: $('#network-select').val(),
+			location_city_name: $('#location_city_name').val().trim(),
+			location_zip: $('#location_zip').val().trim(),
+			location_short_street_name: $('#location_short_street_name').val().trim(),
+			location_house: $('#location_house').val().trim(),
+			location_flat: $('#location_flat').val().trim(),
+			create_new_metrotv_account: 1
+		    };
+
+		    // wyślij zapis — oczekujemy JSON (resp.success, resp.message_html)
+		    $.ajax({
+			url: "?m=metroportmetrotvservicesaction",
+			type: 'POST',
+			data: payload,
+			dataType: 'json',
+			success: function(resp) {
+			    var $respContainer = $('#metroport_message');
+			    $respContainer.empty();
+			    if (resp && resp.success) {
+				$respContainer.append(resp.message_html || '<div>OK</div>');
+			    } else {
+				$respContainer.append(resp && resp.message_html ? resp.message_html : '<div style="color:red;">Nieznany błąd</div>');
+			    }
+			    $respContainer.append($buttonClose);
+			},
+			error: function(xhr, status, error) {
+			    var $respContainer = $('#metroport_message');
+			    $respContainer.empty().append('<div style="color:red;">Błąd serwera: ' + (xhr.responseText || error) + '</div>');
+			    $respContainer.append($buttonClose);
+			}
+		    });
+		});
+	    },
+	    error: function(xhr, status, err) {
+		console.error('AJAX error', status, err);
+		$('#api_customer_metrotv').html('<div style="color:red;">Błąd ładowania danych.</div>');
+	    }
+	});
+    }
+
+    function get_metrotv_customer_services_list(customer_id) {
+	if (!LmsUserRightReadOnly_Fsecure_Customer_Access) {
+	    $('.metrotv_customer_services tbody').empty().append(`
+		<tr>
+		    <td class="empty-table" colspan="7" style="text-align:center; color:red;">
+			❌ Brak uprawnień.
+		    </td>
+		</tr>
+	    `);
+	    return;
+	}
+
+	$.ajax({
+	    url: '?m=metroportmetrotvservicesaction',
+	    type: 'POST',
+	    data: { get_metrotv_customer_account: 1, lmscustomerid: customer_id },
+	    dataType: 'json',
+	    beforeSend: function() {
+		var $tbody = $('.metrotv_customer_service tbody');
+		$tbody.empty().append(`
+		    <tr class="loading-row">
+			<td colspan="4" style="text-align:center; padding:10px;">
+			    <div class="spinner"></div>
+			    <div>Ładowanie danych...</div>
+			</td>
+		    </tr>
+		`);
+	    },
+	    success: function(response) {
+		if (response.CustomerExistInMetroport==false)
+		{
+		    if(LmsUserRightAdd_Edit_MMMS_User_Access)
+		    {
+				var linkHtml = `
+					<a href="#" 
+					onclick="open_dialog_box_api_customer('${customer_id}'); return false;" 
+					id="new_metroport_client" 
+					style="margin-bottom: 0px;">
+					Dodaj Klienta Do Metroport <i class="lms-ui-icon-next fa-fw fa-fw"></i>
+					</a>
+				`;
+			}
+		}
+		else
+		{
+		    if (LmsUserRightAdd_Edit_MMMS_Fsecure_Access)
+		    {
+				var linkHtml = `
+					<a href="#" 
+					onclick="open_dialog_box_api_new_metrotv_account('${customer_id}'); return false;" 
+					id="new_metrotv_account" 
+					style="margin-bottom: 0px;">
+					Dodaj Konto MetroTV <i class="lms-ui-icon-next fa-fw fa-fw"></i>
+					</a>
+				`;
+		    }
+		}
+		$('#customer_action_metrotv_box').html(linkHtml);
+		
+		var $tbody = $('.metrotv_customer_service tbody');
+		$tbody.empty(); // usuń spinner
+
+		function safe(val, fallback) {
+		    return val !== undefined && val !== null && val !== '' ? val : fallback;
+		}
+
+		// Zwraca true jeśli pakiet jest aktywny (sprawdza różne pola możliwe w wsadzie)
+		function pkgIsActive(pkg) {
+		    if (!pkg) return false;
+		    var v = undefined;
+		    if (pkg.active !== undefined) v = pkg.active;
+		    else if (pkg.pkg_active !== undefined) v = pkg.pkg_active;
+		    else if (pkg.actual_active !== undefined) v = pkg.actual_active;
+		    else {
+			// fallback: jeśli brak pól aktywności traktuj jako aktywny
+			return true;
+		    }
+		    return (v === true || v === 1 || String(v) === '1');
+		}
+
+		function makePrefix(prefixFlags, isLast) {
+		    var s = '';
+		    for (var p = 0; p < prefixFlags.length; p++) {
+			s += prefixFlags[p] ? '    ' : '│   ';
+		    }
+		    s += (isLast ? '└─' : '├─');
+		    return s;
+		}
+
+		$.each(response.accounts || {}, function(accKey, accObj) {
+		    if (!accObj || !accObj.success) return;
+		    var acc = accObj.data;
+		    var accountId = acc.id || acc.ID || acc.account_id || accKey;
+		    var mainPackage = acc?.Packages?.MainPackage?.id || null;
+		    var accactivestatus = acc?.active || null;
+		    
+		    // Adres
+		    var streetName = safe(acc.locationstreetname, '');
+		    var streetNo = safe(acc.locationstreetno, '');
+		    var zip = safe(acc.locationzip, '');
+		    var city = safe(acc.locationcity, '');
+		    var lokal = acc.locationlocal ? ', lokal ' + acc.locationlocal : '';
+
+		    var location;
+		    if (!streetName) {
+				// Bez ulicy
+				location = zip + ' ' + city + (streetNo ? ' ' + streetNo : '') + lokal;
+		    } else {
+				// Z ulicą
+				location = streetName + ' ' + streetNo + lokal + ', ' + zip + ' ' + city;
+		    }
+		    // Zbierz pakiety (TYLKO aktywne do renderowania)
+		    var packages = [];
+		    if (acc.Packages && acc.Packages.MainPackage && pkgIsActive(acc.Packages.MainPackage)) {
+				packages.push(acc.Packages.MainPackage);
+		    }
+		    if (acc.Packages && acc.Packages.ExtraPackages) {
+				$.each(acc.Packages.ExtraPackages, function(k, pkg) {
+					if (pkgIsActive(pkg)) packages.push(pkg);
+				});
+		    }
+		    var multirooms = [];
+		    if (acc.Packages && acc.Packages.MultiroomPackages && Array.isArray(acc.Packages.MultiroomPackages)) {
+				// filtruj tylko aktywne MultiroomPackages
+				for (var mi = 0; mi < acc.Packages.MultiroomPackages.length; mi++) {
+					var mPkg = acc.Packages.MultiroomPackages[mi];
+					if (pkgIsActive(mPkg)) multirooms.push(mPkg);
+				}
+		    }
+		    var topLevelCount = packages.length + multirooms.length;
+
+		    // Wrapper row (jedna komórka colspan=4 zawiera "kartę")
+		    var $accWrapper = $('<tr class="account-wrapper"></tr>');
+		    var $accTd = $('<td colspan="4"></td>');
+		    var $box = $('<div class="account-card"></div>');
+		    // changed colgroup -> 4 columns (label | meta | price | actions)
+		    var $innerTable = $('<table class="inner-account-table"><colgroup><col><col><col><col></colgroup><tbody></tbody></table>');
+		    var $innerTbody = $innerTable.find('tbody');
+
+		    // Lokacja (root) wewnątrz karty
+		    if (accactivestatus==1)
+				var $locInnerRow = $('<tr class="location-row"></tr>');
+		    else
+				var $locInnerRow = $('<tr class="location-row-block"></tr>');
+		    
+		    $locInnerRow.append('<td class="label">Konto ' + accountId + ':</td>');
+		    $locInnerRow.append('<td class="meta">' + location + '</td>');
+		    if (accactivestatus==1)
+				$locInnerRow.append('<td class="price-cell">—</td>');
+		    else
+				$locInnerRow.append('<td class=""><font color=red>Konto zablokowane <i class="fa-solid fa-triangle-exclamation"></i></font></td>');
+		    // --- NOWA LOGIKA: sprawdź, czy istnieje JAKIŚ aktywny pakiet.
+		    // Jeśli NIE ma żadnego aktywnego pakietu (wszystkie pakiety mają flagę active=0 lub brak pakietów),
+		    // to pokaż przycisk "Skasuj Konto".
+		    var hasActivePackage = false;
+
+		    if (acc.Packages) {
+				// sprawdź MainPackage
+				if (acc.Packages.MainPackage && pkgIsActive(acc.Packages.MainPackage)) {
+					hasActivePackage = true;
+				}
+				// sprawdź ExtraPackages (obiekt map)
+				if (!hasActivePackage && acc.Packages.ExtraPackages) {
+					$.each(acc.Packages.ExtraPackages, function(k, pkg) {
+						if (pkgIsActive(pkg)) {
+							hasActivePackage = true;
+							return false; // przerwij $.each
+						}
+					});
+				}
+				// sprawdź MultiroomPackages (tablica)
+				if (!hasActivePackage && acc.Packages.MultiroomPackages && Array.isArray(acc.Packages.MultiroomPackages)) {
+					for (var m = 0; m < acc.Packages.MultiroomPackages.length; m++) {
+						if (pkgIsActive(acc.Packages.MultiroomPackages[m])) {
+							hasActivePackage = true;
+							break;
+						}
+					}
+				}
+		    }
+		    		   
+		    if (!hasActivePackage)
+				$locInnerRow.append('<td class="actions"><button class="lms-ui-button" data-account-id="' + accountId + '" onclick="add_basic_package(\'' + accountId + '\', \'podstawowy\');" ><i class="lms-ui-icon-add"></i><span class="lms-ui-label">Wydaj pakiet podstawowy</span></button></td>');
+		    else
+				$locInnerRow.append('<td class="actions"><button class="lms-ui-button" data-account-id="' + accountId + '" onclick="add_basic_package(\'' + accountId + '\', \'dodatkowy\',\''+mainPackage+'\');" ><i class="lms-ui-icon-add"></i><span class="lms-ui-label">Wydaj pakiet dodatkowy</span></button></td>');
+		   
+		    $locInnerRow.find('td.actions').append(' <button class="lms-ui-button" onclick="edit_metrotv_account(\'' + accountId + '\');"><i class="lms-ui-icon-edit"></i><span class="lms-ui-label">Edytuj</span></button>');
+		    if (!hasActivePackage) {
+				$locInnerRow.find('td.actions').append(' <button class="lms-ui-button" onclick="delete_metrotv_account(\'' + accountId + '\', \'' + location + '\',this);"><i class="lms-ui-icon-delete"></i><span class="lms-ui-label">Usuń</span></button>');
+		    }
+		    if (accactivestatus==1)
+		        $locInnerRow.find('td.actions').append(' <td class="actions"><button class="lms-ui-button" data-account-id="' + accountId + '" onclick="block_account(\'' + accountId + '\');" ><span class="lms-ui-label">Zablokuj</span></button></td>');
+		    else
+				$locInnerRow.find('td.actions').append(' <td class="actions"><button class="lms-ui-button" data-account-id="' + accountId + '" onclick="unblock_account(\'' + accountId + '\');" ></i><span class="lms-ui-label">Odblokuj</span></button></td>');
+		    
+		    $innerTbody.append($locInnerRow);
+
+		    // Funkcja do dodawania pakietów i STB
+		    function appendPackageRow(pkg, isMultiroom, pkgIndex) {
+				// Jeśli pakiet nieaktywny (dodatkowe zabezpieczenie), pomiń
+				if (!pkgIsActive(pkg)) return;
+
+				var pkgName = safe(pkg.pkg_name, isMultiroom ? 'MULTIROOM' : '-');
+				var pkgFrom = safe(pkg.pkg_valid_from, '-');
+				var pkgTo = safe(pkg.pkg_valid_to, '-');
+				var pkgActive = pkg.active;
+				var isLastTopLevel = (pkgIndex === topLevelCount - 1);
+				var prefix = makePrefix([], isLastTopLevel);
+
+				// Pobierz brutto: preferujemy actual_pricebrutto, fallback pricebrutto
+				var brutto = (pkg.actual_pricebrutto !== undefined) ? pkg.actual_pricebrutto : (pkg.pricebrutto !== undefined ? pkg.pricebrutto : null);
+				var bruttoDisplay = '—';
+				if (brutto !== null && brutto !== '-') {
+				var nb = parseFloat(brutto);
+				if (!isNaN(nb)) bruttoDisplay = nb.toFixed(2) + ' ' + (pkg.currency || acc.currency || 'PLN');
+				else bruttoDisplay = String(brutto);
+				}
+
+				// określ czy to jest główny pakiet (MainPackage)
+				var isMainPackage = false;
+				if (acc.Packages && acc.Packages.MainPackage) {
+				try {
+					if ((pkg.id !== undefined && acc.Packages.MainPackage.id !== undefined && pkg.id == acc.Packages.MainPackage.id) || pkg.pkg_group == 1) {
+					isMainPackage = true;
+					}
+				} catch (e) { /* ignore */ }
+				}
+
+				// tekst etykiety: Multiroom / Pakiet Główny / Pakiet dodatkowy
+				var labelText = '';
+				if (isMultiroom) {
+				labelText = 'Pakiet multiroom:';
+				} else if (isMainPackage) {
+				labelText = 'Pakiet główny:';
+				} else {
+				labelText = 'Pakiet dodatkowy:';
+				}
+				var $pkgInnerRow = $('<tr class="package-row"></tr>');
+				$pkgInnerRow.append('<td class="label">' + prefix + ' ' + labelText + '</td>');
+				$pkgInnerRow.append('<td class="meta">('+safe(pkg.id,'')+') - ' + pkgName + ' </td>');
+				$pkgInnerRow.append('<td class="price-cell">' + bruttoDisplay + '</td>');
+
+				// jeśli pakiet ma powiązane STB (pkg.stb_data) - ukryj przycisk Skasuj
+				var hasStb = false;
+				if (pkg.stb_data) {
+					if (Array.isArray(pkg.stb_data)) {
+						hasStb = pkg.stb_data.length > 0;
+					} else {
+						hasStb = true;
+					}
+				}
+
+				var actions = '';
+				if (!hasStb) {
+					actions += '<button class="lms-ui-button" data-account-id="' + accountId + '" onclick="delete_metrotv_package_from_account(\'' + accountId + '\', \'' + safe(pkg.id,'') + '\', \'' + pkgName + '\', this);"><i class="lms-ui-icon-delete"></i><span class="lms-ui-label">Usuń</span></button>';
+				}
+
+				// show "Wydaj STB" only for MAIN package and for MultiroomPackages, and only if package has no STB yet
+				if ((isMainPackage || isMultiroom) && !hasStb) actions += ' <button type="button" class="lms-ui-button" data-account-id="' + accountId + '" onclick="addstb(\'' + accountId + '\', \'' + safe(pkg.id,'') + '\');"><i class="lms-ui-icon-add"></i><span class="lms-ui-label">Wydaj STB</span></button>';
+				$pkgInnerRow.append('<td class="actions">' + actions + '</td>');
+				$innerTbody.append($pkgInnerRow);
+
+				// STB-y
+				if (pkg.stb_data) {
+					var stbArray = Array.isArray(pkg.stb_data) ? pkg.stb_data : [pkg.stb_data];
+					stbArray.forEach(function(stb, i){
+						var model = safe(stb.ModelName, '-');
+						var ip = safe(stb.AddressIp, '-');
+						var sn = safe(stb.serialnumber, '-');
+						var mac = safe(stb.mac, '-');
+						var svc = safe(stb.servicetype, '-');
+
+						var isLastStb = (i === stbArray.length - 1);
+						var prefixFlags = [isLastTopLevel];
+						var stbPrefix = makePrefix(prefixFlags, isLastStb);
+
+						var $stbInnerRow = $('<tr class="stb-row"></tr>');
+						$stbInnerRow.append('<td class="label">' + stbPrefix + ' ' + (isMultiroom ? 'STB Multiroom:' : 'STB:') + '</td>');
+
+						var $stbRight = $('<td class="meta"></td>');
+						$stbRight.append('<div>('+safe(stb.id,'')+') - Model: ' + model + '</div>');
+						$stbRight.append('<div>IP: ' + ip + ' · MAC: ' + mac + '</div>');
+						$stbRight.append('<div>SN: ' + sn + ' · Typ: ' + svc + '</div>');
+						$stbInnerRow.append($stbRight);
+
+						$stbInnerRow.append('<td class="price-cell">—</td>');
+
+						$stbInnerRow.append(
+						'<td class="actions">' +
+							'<button class="lms-ui-button" data-account-id="' + accountId + '" onclick="delete_metrotv_STB_from_package_account(\'' + accountId + '\', \'' + mac + '\', this);"><i class="lms-ui-icon-delete"></i><span class="lms-ui-label">Usuń</span></button>' +
+						'</td>'
+						);
+						$innerTbody.append($stbInnerRow);
+					});
+				}
+		    }
+
+		    // Dodaj pakiety zwykłe i multiroom (już przefiltrowane)
+		    packages.forEach(function(pkg, idx){ appendPackageRow(pkg, false, idx); });
+		    multirooms.forEach(function(pkg, idx){ appendPackageRow(pkg, true, packages.length + idx); });
+
+		    // --- DODAJ PODSUMOWANIE KWOT DLA TEJ SEKCJI ---
+		    // pobierz sumy z acc.PackagesSums (fallbacky do acc.Total*)
+		    var totalNetto = (acc.PackagesSums && acc.PackagesSums.TotalNetto !== undefined) ? acc.PackagesSums.TotalNetto : (acc.TotalNetto !== undefined ? acc.TotalNetto : null);
+		    var totalVat   = (acc.PackagesSums && acc.PackagesSums.TotalVat   !== undefined) ? acc.PackagesSums.TotalVat   : (acc.TotalVat !== undefined   ? acc.TotalVat   : null);
+		    var totalBrutto= (acc.PackagesSums && acc.PackagesSums.TotalBrutto!== undefined) ? acc.PackagesSums.TotalBrutto: (acc.TotalBrutto !== undefined? acc.TotalBrutto: null);
+
+		    function fmtAmount(v) {
+		      if (v === null || v === undefined || v === '') return '—';
+		      var n = parseFloat(v);
+		      if (isNaN(n)) return String(v);
+		      return n.toFixed(2);
+		    }
+		    var currency = acc.currency || (acc.Packages && acc.Packages.currency) || 'PLN';
+
+		    if (totalNetto !== null || totalVat !== null || totalBrutto !== null) {
+		      var nettoTxt  = totalNetto !== null ? (fmtAmount(totalNetto) + ' ' + currency) : '—';
+		      var vatTxt    = totalVat   !== null ? (fmtAmount(totalVat)   + ' ' + currency) : '—';
+		      var bruttoTxt = totalBrutto!== null ? (fmtAmount(totalBrutto)+ ' ' + currency) : '—';
+
+		      var $summaryRow = $('<tr class="summary-row"></tr>');
+		      $summaryRow.append('<td class="label"></td>');
+		      $summaryRow.append('<td class="meta"></td>');
+		      $summaryRow.append('<td class="price-cell">W sumie burtto: ' + bruttoTxt + '</td>');
+		      $summaryRow.append('<td class="actions"></td>');
+		      $innerTbody.append($summaryRow);
+		    }
+
+		    // Zbuduj strukturę i wstaw do tbody
+		    $innerTable.appendTo($box);
+		    $box.append($innerTable);
+		    $accTd.append($box);
+		    $accWrapper.append($accTd);
+		    $tbody.append($accWrapper);
+		});
+
+		// Jeśli brak kont
+		if ($tbody.children().length === 0) {
+		    $tbody.append(`
+			<tr>
+			    <td colspan="4" class="empty-table" style="text-align:center; padding:12px;">
+				<p>Ten klient nie ma przypisanych żadnych usług.</p>
+			    </td>
+			</tr>
+		    `);
+		}
+	    },
+	    error: function(xhr, status, error) {
+		var $tbody = $('.metrotv_customer_service tbody');
+		$tbody.empty().append(`
+		    <tr>
+			<td class="empty-table" colspan="4" style="text-align:center; color:red;">
+			    ❌ Wystąpił błąd podczas pobierania danych - Sprawdź dostępność serwera.
+			</td>
+		    </tr>
+		`);
+		console.error("Błąd AJAX:", status, error);
+	    }
+	});
+    }
+       
+    function edit_metrotv_account(accountid)
+    {
+		var $dialog = $("#api_customer_metrotv");
+		$dialog.dialog("open");
+		$dialog.dialog('option', 'title', 'Edycja konta MetroTV.');
+
+		// zapewniamy wrapper z id metroport_message (jak we wzorze)
+		$dialog.html('<div id="metroport_message" class="lms-ui-spinner" style="text-align:center; font-size:16px; font-weight:bold; color:#2c3e50; margin:20px 0;">⏳ Trwa pobieranie danych z Metroport...</div>');
+
+		// TU trzymamy referencję i będziemy do niego appendować wszystko (wzór F-Secure)
+		var $container = $('#metroport_message');
+
+		// Pobierz dane konta
+		$.ajax({
+			url: '?m=metroportmetrotvservicesaction',
+			type: 'POST',
+			data: { get_metrotv_customer_account_by_id: 1, accountid: accountid, lmscustomerid: customerID },
+			dataType: 'json',
+			beforeSend: function() {
+				// loader w containerze (append, nie nadpisujemy wrappera)
+				$container.empty().append(
+					'<div style="text-align:center; padding:12px;">' +
+					'<div class="spinner"></div>' +
+					'<div>Ładowanie danych...</div>' +
+					'</div>'
+				);
+			},
+			success: function(response) {
+				// zabezpieczenie - upewnij się, że response.data istnieje
+				var accountData = (response && response.data) ? response.data : {};
+				var metroport_user_id = (response && response.userid && response.userid.metroport_user_id) ? response.userid.metroport_user_id : '';
+				var userData = accountData.UserData || {};
+				var addrObj = {}; // zachowanie kompatybilności z wcześniejszym kodem
+				if (response.address && typeof response.address === 'object') {
+					var addrKeys = Object.keys(response.address || {});
+					if (addrKeys.length) addrObj = response.address[addrKeys[0]] || {};
+				}
+				// zbuduj HTML formularza (BEZ wrappera #metroport_message)
+				var innerHtml = `
+					<style>
+					#api_customer_metrotv .lms-input.invalid, 
+					#api_customer_metrotv .lms-select.invalid { border-color: #d9534f !important; box-shadow: none; }
+					#api_customer_metrotv .metroport-error { color:#a94442; background:#f2dede; border:1px solid #ebcccc; padding:8px 10px; border-radius:3px; margin-bottom:10px; font-size:13px; }
+					#api_customer_metrotv .metroport-error strong { font-weight:700; }
+					.metrotv-wrap { padding:6px 4px; }
+					.metrotv-section { margin-bottom:10px; }
+					.metrotv-label { display:block; margin-bottom:4px; font-size:13px; color:#333; }
+					.row { display:flex; gap:10px; align-items:flex-start; margin-top:6px; }
+					.col { flex:1; }
+					.small-note { font-size:12px; color:#666; margin-top:6px; }
+					</style>
+
+					<div class="metrotv-wrap">
+					<h3 class="metrotv-title">Edycja konta MetroTV</h3>
+					<div id="metroport-error-holder"></div>
+
+					<div class="metrotv-section">
+						<label class="metrotv-label" for="network-select">Wybierz sieć:</label>
+						<select id="network-select" class="lms-select" style="width:100%;">
+						<option value="">-- wybierz sieć --</option>
+						</select>
+						<div id="network-info" class="small-note">Wybierz produkt / sieć z listy powyżej.</div>
+					</div>
+
+					<div class="metrotv-section">
+						<label class="metrotv-label">Adres usługi:</label>
+
+						<label class="metrotv-label" for="location_city_name" style="font-weight:500; font-size:12px; margin-top:6px;">Miasto</label>
+						<input type="text" id="location_city_name" class="lms-input" value="${(addrObj.location_city_name || '')}">
+
+						<label class="metrotv-label" for="location_zip" style="font-weight:500; font-size:12px; margin-top:8px;">Kod pocztowy</label>
+						<input type="text" id="location_zip" class="lms-input" value="${(addrObj.location_zip || '')}">
+
+						<label class="metrotv-label" for="location_short_street_name" style="font-weight:500; font-size:12px; margin-top:8px;">Ulica</label>
+						<input type="text" id="location_short_street_name" class="lms-input" value="${(addrObj.location_short_street_name || '')}">
+
+						<div class="row">
+						<div class="col">
+							<label class="metrotv-label" for="location_house" style="font-weight:500; font-size:12px;">Nr domu</label>
+							<input type="text" id="location_house" class="lms-input" value="${(addrObj.location_house || '')}">
+						</div>
+						<div style="width:130px;">
+							<label class="metrotv-label" for="location_flat" style="font-weight:500; font-size:12px;">Nr mieszkania</label>
+							<input type="text" id="location_flat" class="lms-input" value="${(addrObj.location_flat || '')}">
+						</div>
+						</div>
+					</div>
+
+					<div id="metrotv-buttons-placeholder" style="margin-top:12px; text-align:center;"></div>
+					</div>
+				`;
+
+				// appendujemy do istniejącego wrappera (tak jak we wzorze) i re-selektujemy container
+				$container.empty().append(innerHtml);
+				$container = $('#metroport_message');
+
+				// przygotuj przyciski jako elementy jQuery (jak we wzorze F-Secure)
+				var $buttonSave = $('<button>', { type: 'button', text: 'Zapisz', class: 'lms-ui-button save_metrotv_account', style: 'margin-right:8px;' });
+				var $buttonCancel = $('<button>', { type: 'button', text: 'Anuluj', class: 'lms-ui-button' });
+				var $buttonClose = $('<button>', { type: 'button', text: 'Zamknij', class: 'lms-ui-button', style: 'margin-left:8px;' });
+
+				// dopinamy przyciski do placeholder-a
+				$('#metrotv-buttons-placeholder').append($buttonSave, $buttonCancel);
+
+				// zachowanie Anuluj i Zamknij
+				$buttonCancel.on('click', function() {
+					$('#api_customer_metrotv').empty();
+					$dialog.dialog('close');
+				});
+				$buttonClose.on('click', function() {
+					get_metrotv_customer_services_list(customerID);
+					$dialog.dialog('close');
+				});
+
+				// funkcja błędu (jak we wcześniejszym kodzie)
+				var metroportErrorTimeoutId = null;
+				function showMetroportError(message) {
+					if (metroportErrorTimeoutId) { clearTimeout(metroportErrorTimeoutId); metroportErrorTimeoutId = null; }
+					var $holder = $('#metroport-error-holder');
+					var errHtml = '<div class="metroport-error"><strong>' + $('<div>').text(message).html() + '</strong></div>';
+					$holder.stop(true, true).html(errHtml).show();
+					metroportErrorTimeoutId = setTimeout(function() {
+					$holder.fadeOut(250, function() { $(this).empty().show(); });
+					$('.lms-input, .lms-select').removeClass('invalid');
+					metroportErrorTimeoutId = null;
+					}, 10000);
+				}
+
+				// wypełnij select sieci (response.networks powinno być tablicą)
+				var $select = $('#network-select');
+				if (Array.isArray(response.networks)) {
+					response.networks.forEach(function(net) {
+						// wstawiamy wszystkie opcje, ale oznaczamy te, które są dostępne (tak jak wcześniej)
+						var addrForDisplay = (net.address_long && String(net.address_long).trim() !== '') ? net.address_long : net.address;
+						var text = (net.NetworkSelectName || net.name) + ' (' + addrForDisplay + '/' + (net.mask_prefix || '') + ')';
+						var $opt = $('<option>').val(net.id).text(text).data('network', net);
+						$select.append($opt);
+					});
+				}
+
+				var selectedNetworkId = String(accountData.iptv_networkid || (accountData.NetworkData && accountData.NetworkData.id) || '');
+				if (selectedNetworkId) {
+					if ($select.find('option[value="' + selectedNetworkId + '"]').length) {
+						$select.val(selectedNetworkId).trigger('change');
+					} else {
+						var netInfo = accountData.NetworkData || null;
+						var addrForDisplay = netInfo && (netInfo.address_long && String(netInfo.address_long).trim() !== '') ? netInfo.address_long : (netInfo && netInfo.address) || '';
+						var text = netInfo ? (netInfo.name + ' (' + addrForDisplay + '/' + (netInfo.mask_prefix || '') + ')') : ('Sieć ' + selectedNetworkId);
+						$select.append($('<option>').val(selectedNetworkId).text(text).data('network', netInfo));
+						$select.val(selectedNetworkId).trigger('change');
+						}
+
+						// uaktualnij info o sieci
+						var net = $select.find('option:selected').data('network') || accountData.NetworkData || null;
+						if (net) {
+							var infoText = 'ID: ' + (net.id || selectedNetworkId) + ' | transport: ' + (net.transport || '-') + ' | STB: ' + (net.TotalSTBs || '0') + '/' + (net.size || '-');
+							$('#network-info').text(infoText);
+						}
+				}
+
+				// teraz ustaw pola adresowe: preferujemy top-level location* pola z accountData
+				function setIf(value) {if (typeof value === 'undefined' || value === null) return ''; var s = String(value).trim(); if (s === '' || s === '0') return ''; return s; }
+
+				$('#location_city_name').val(
+					setIf(accountData.locationcity) ||
+					(userData.city1 && userData.city1 !== '0' ? userData.city1 : '')
+				);
+
+				$('#location_zip').val(
+					setIf(accountData.locationzip) ||
+					(userData.zip1 && userData.zip1 !== '0' ? userData.zip1 : '')
+				);
+
+				$('#location_short_street_name').val(
+					setIf(accountData.locationstreetname) ||
+					setIf(userData.streetname1) ||
+					''
+				);
+
+				$('#location_house').val(
+					setIf(accountData.locationstreetno) ||
+					setIf(userData.streetno1) ||
+					''
+				);
+
+				$('#location_flat').val(
+					setIf(accountData.locationlocal) ||
+					setIf(userData.local1) ||
+					''
+				);
+
+				// info o sieci po wyborze (przypięte handler)
+				$('#network-select').off('change.metrotv').on('change.metrotv', function() {
+					var net = $(this).find('option:selected').data('network') || null;
+					var $info = $('#network-info');
+					if (!net) { $info.text('Wybierz produkt / sieć z listy powyżej.'); return; }
+					var infoText = 'ID: ' + (net.id || '-') + ' | transport: ' + (net.transport || '-') + ' | STB: ' + (net.TotalSTBs || '0') + '/' + (net.size || '-');
+					$info.text(infoText);
+				});
+
+				// delegacja: obsługa zapisu na wrapperze (dokładnie jak we wzorze)
+				$container.off('click', '.save_metrotv_account').on('click', '.save_metrotv_account', function() {
+					$('#metroport-error-holder').empty();
+					$('.lms-input, .lms-select').removeClass('invalid');
+
+					var fields = [
+						{ el: $('#network-select'), name: 'Sieć' },
+						{ el: $('#location_city_name'), name: 'Miasto' },
+						{ el: $('#location_zip'), name: 'Kod pocztowy' },
+						{ el: $('#location_house'), name: 'Nr domu' }
+					];
+
+					var invalids = [];
+					for (var i = 0; i < fields.length; i++) {
+						var $el = fields[i].el;
+						var val = ($el.val() || '').toString().trim();
+						if (val === '') { invalids.push(fields[i]); $el.addClass('invalid'); }
+					}
+					if (invalids.length) { showMetroportError('Proszę wypełnić wszystkie pola oznaczone na czerwono.'); invalids[0].el.focus(); return; }
+
+					var payload = {
+						accountid: accountid,
+						lmscustomerid: customerID,
+						metroport_user_id: metroport_user_id,
+						network_id: $('#network-select').val(),
+						location_city_name: $('#location_city_name').val().trim(),
+						location_zip: $('#location_zip').val().trim(),
+						location_short_street_name: $('#location_short_street_name').val().trim(),
+						location_house: $('#location_house').val().trim(),
+						location_flat: $('#location_flat').val().trim(),
+						edit_exist_account: 1
+					};
+
+					// wyślij zapis — oczekujemy JSON (resp.message_html może istnieć bez resp.success)
+					$.ajax({
+					url: "?m=metroportmetrotvservicesaction",
+					type: 'POST',
+					data: payload,
+					dataType: 'json',
+					success: function(resp) {
+						var $respContainer = $('#metroport_message');
+						$respContainer.empty();
+						// jeśli resp jest string (niezdekodowane), spróbuj sparsować
+						if (typeof resp === 'string') {
+							try { resp = JSON.parse(resp); } catch (e) { /* ignore */ }
+						}
+
+						// Preferuj message_html, potem message, a jeśli chcesz wykryć sukces
+						if (resp && resp.message_html) {
+							$respContainer.append(resp.message_html);
+						} else if (resp && resp.message) {
+							$respContainer.append('<div>' + $('<div>').text(resp.message).html() + '</div>');
+						} else {
+						// możliwy przypadek: brak message_html — pokaż fallback
+							$respContainer.append('<div style="color:red;">Nieznany błąd</div>');
+						}
+
+						$respContainer.append($buttonClose);
+					},
+					error: function(xhr, status, error) {
+						var $respContainer = $('#metroport_message');
+						$respContainer.empty().append('<div style="color:red;">Błąd serwera: ' + (xhr.responseText || error) + '</div>');
+						$respContainer.append($buttonClose);
+					}
+					});
+				});
+			},
+			error: function(xhr, status, err) {
+				console.error('AJAX error', status, err);
+				$('#api_customer_metrotv').html('<div style="color:red;">Błąd ładowania danych.</div>');
+			}
+		});
+    }
+    
+    function add_basic_package(account_id,typ,pkg_denied) {
+		var $dialog = $("#api_customer_metrotv");
+		var tytul = 'Dodawanie pakietu ';
+		if (typ === 'podstawowy') {
+			tytul += 'podstawowego';
+		} else if (typ === 'dodatkowy') {
+			tytul += 'dodatkowego';
+		} else if (typ) {
+			tytul += typ.toLowerCase(); // fallback
+		} else {
+			tytul += '';
+		}
+		$dialog.dialog("open");
+		$dialog.dialog('option', 'title', tytul);
+
+		// Wrapper na komunikaty/spinnery itp.
+		$dialog.html('<div id="metroport_message" class="lms-ui-spinner" style="text-align:center; font-size:16px; font-weight:bold; color:#2c3e50; margin:20px 0;">⏳ Trwa pobieranie danych z Metroport...</div>');
+		var $container = $('#metroport_message');
+
+		$.ajax({
+			url: '?m=metroportmetrotvservicesaction',
+			type: 'POST',
+			data: { get_basic_packages: 1, type: typ },
+			dataType: 'json',
+			beforeSend: function() {
+				$container.empty().append(
+					'<div style="text-align:center; padding:12px;">' +
+					'<div class="spinner"></div>' +
+					'<div>Ładowanie listy pakietów...</div>' +
+					'</div>'
+				);
+			},
+	    	success: function(response) {
+				var packages = (response && response.api_result) ? response.api_result : [];
+				// Zbuduj HTML wyboru pakietu
+				var innerHtml = `
+					<style>
+					#api_customer_metrotv .lms-input.invalid, 
+					#api_customer_metrotv .lms-select.invalid { border-color: #d9534f !important; box-shadow: none; }
+					#api_customer_metrotv .metroport-error { color:#a94442; background:#f2dede; border:1px solid #ebcccc; padding:8px 10px; border-radius:3px; margin-bottom:10px; font-size:13px; }
+					#api_customer_metrotv .metroport-error strong { font-weight:700; }
+					.metrotv-wrap { padding:6px 4px; }
+					.metrotv-section { margin-bottom:10px; }
+					.metrotv-label { display:block; margin-bottom:4px; font-size:13px; color:#333; }
+					.row { display:flex; gap:10px; align-items:flex-start; margin-top:6px; }
+					.col { flex:1; }
+					.small-note { font-size:12px; color:#666; margin-top:6px; }
+					</style>
+
+					<div class="metrotv-wrap">
+					<h3 class="metrotv-title">`+tytul+`</h3>
+					<div id="metroport-error-holder"></div>
+
+					<div class="metrotv-section">
+						<label class="metrotv-label" for="basic-package-select">Wybierz pakiet:</label>
+						<select id="basic-package-select" class="lms-select" style="width:100%;">
+						<option value="">-- wybierz pakiet --</option>
+						</select>
+						<div id="package-info" class="small-note">Wybierz pakiet z listy powyżej.</div>
+					</div>
+
+					<div class="metrotv-section">
+						<label class="metrotv-label" for="package-price">Cena brutto (PLN):</label>
+						<input type="text" id="package-price" class="lms-input" style="width:160px;" value="" readonly>
+						<div id="package-price-info" class="small-note"></div>
+					</div>
+
+					<div id="metrotv-buttons-placeholder" style="margin-top:12px; text-align:center;"></div>
+					</div>
+				`;
+
+				$container.empty().append(innerHtml);
+
+				// Dodajemy do selecta pakiety
+				var $select = $('#basic-package-select');
+				var today = new Date().toISOString().slice(0, 10); // Format yyyy-mm-dd
+
+				packages.forEach(function(pkg) {
+					// Jeśli pkg.pkg_valid_to jest mniejsze lub równe dzisiejszej dacie, WYŚWIETL (czyli pokaż tylko ważne)
+					// Zamieniamy na string yyyy-mm-dd (przycinamy, bo mogą być spacje itd.)
+					var validTo = (pkg.pkg_valid_to || '').slice(0, 10);
+					// Pomijaj pakiet jeśli data końca > dzisiaj (czyli już NIE ważny)
+					if (typ === 'dodatkowy') {
+						var deniedList = (pkg.pkg_denied || '')
+						.split(',')
+						.map(x => x.trim())
+						.filter(x => x !== '')
+						.map(x => parseInt(x, 10));
+						// Jeśli pkg.id jest w tablicy denied, pomiń
+						if (deniedList.includes(parseInt(pkg.id, 10))) return;
+						}
+					if (validTo < today) return; // wyklucz przyszłe pakiety
+					var text = `${pkg.pkg_name} (id: ${pkg.id}) (od: ${pkg.pkg_valid_from} - ${pkg.pkg_valid_to}) - cenna brutto: ${pkg.pricebrutto}`;
+					var $opt = $('<option>').val(pkg.id).text(text).data('package', pkg);
+					$select.append($opt);
+				});
+
+				// Informacje o pakiecie po wyborze
+				$select.off('change.basicpkg').on('change.basicpkg', function() {
+					var pkg = $(this).find('option:selected').data('package') || null;
+					var $info = $('#package-info');
+					var $priceInput = $('#package-price');
+					var $priceInfo = $('#package-price-info');
+					if (!pkg) {
+						$info.text('Wybierz pakiet z listy powyżej.');
+						$priceInput.val('');
+						$priceInfo.text('');
+						return;
+					}
+					var infoText = `Dostawca: ${pkg.firmName || '-'} | Kod taryfy: ${pkg.tariffcode || '-'} | Opis: ${(pkg.pkg_desc || '').trim()}`;
+					$info.text(infoText);
+					$priceInput.val(pkg.pricebrutto || '');
+					$priceInfo.text(`Netto: ${pkg.pricenetto || '0.00'} PLN, VAT: ${pkg.vat || '0'}%`);
+					$priceInput.prop('readonly', false); // Pozwalaj na edycję ceny jeśli potrzeba
+				});
+
+				// Przyciski Dodaj/Anuluj
+				var $buttonAdd = $('<button>', { type: 'button', text: 'Dodaj', class: 'lms-ui-button add_pkg_btn', style: 'margin-right:8px;' });
+				var $buttonCancel = $('<button>', { type: 'button', text: 'Anuluj', class: 'lms-ui-button' });
+
+				$('#metrotv-buttons-placeholder').append($buttonAdd, $buttonCancel);
+
+				// Anuluj
+				$buttonCancel.on('click', function() {
+					$('#api_customer_metrotv').empty();
+					$dialog.dialog('close');
+				});
+
+				// Funkcja błędu
+				var metroportErrorTimeoutId = null;
+				function showMetroportError(message) {
+					if (metroportErrorTimeoutId) { clearTimeout(metroportErrorTimeoutId); metroportErrorTimeoutId = null; }
+					var $holder = $('#metroport-error-holder');
+					var errHtml = '<div class="metroport-error"><strong>' + $('<div>').text(message).html() + '</strong></div>';
+					$holder.stop(true, true).html(errHtml).show();
+					metroportErrorTimeoutId = setTimeout(function() {
+						$holder.fadeOut(250, function() { $(this).empty().show(); });
+						$('.lms-input, .lms-select').removeClass('invalid');
+						metroportErrorTimeoutId = null;
+					}, 7000);
+				}
+
+				// Dodaj pakiet - walidacja i wysyłka AJAX
+				$container.off('click', '.add_pkg_btn').on('click', '.add_pkg_btn', function() {
+					$('#metroport-error-holder').empty();
+					$('.lms-input, .lms-select').removeClass('invalid');
+					var $selectedOption = $select.find('option:selected');
+					var pkg = $selectedOption.data('package');
+					var pkg_id = $selectedOption.val();
+					var price = $('#package-price').val().trim();
+
+					if (!pkg_id) { showMetroportError('Wybierz pakiet podstawowy.'); $select.addClass('invalid').focus(); return; }
+					if (!price ) { showMetroportError('Podaj prawidłową cenę pakietu.'); $('#package-price').addClass('invalid').focus(); return; }
+					if (!/^\d+(\.\d{2})$/.test(price)) {
+						showMetroportError('Podaj prawidłową cenę pakietu w formacie xxx.xx');
+						$('#package-price').addClass('invalid').focus();
+						return;
+					}
+					var payload = {
+						account_id: account_id,
+						package_id: pkg_id,
+						price: formatPrice(price),
+						lmscustomerid: customerID,
+						add_basic_package:1
+					};
+
+					// wysyłka zapytania AJAX - napisz w zależności od backendu
+					$.ajax({
+					url: "?m=metroportmetrotvservicesaction",
+					type: 'POST',
+					data: payload,
+					dataType: 'json',
+					success: function(resp) {
+						var $respContainer = $('#metroport_message');
+						$respContainer.empty();
+						if (typeof resp === 'string') {
+							try { resp = JSON.parse(resp); } catch (e) { /* ignore */ }
+						}
+						if (resp && resp.message_html) {
+							$respContainer.append(resp.message_html);
+						} else if (resp && resp.message) {
+							$respContainer.append('<div>' + $('<div>').text(resp.message).html() + '</div>');
+						} else {
+							$respContainer.append('<div style="color:red;">Nieznany błąd</div>');
+						}
+						// Przycisk zamykający
+						var $buttonClose = $('<button>', { type: 'button', text: 'Zamknij', class: 'lms-ui-button', style: 'margin-left:8px;' });
+						$buttonClose.on('click', function() {
+							$dialog.dialog('close');
+							get_metrotv_customer_services_list(customerID);
+						});
+						$respContainer.append($buttonClose);
+					},
+					error: function(xhr, status, error) {
+						var $respContainer = $('#metroport_message');
+						$respContainer.empty().append('<div style="color:red;">Błąd serwera: ' + (xhr.responseText || error) + '</div>');
+						var $buttonClose = $('<button>', { type: 'button', text: 'Zamknij', class: 'lms-ui-button', style: 'margin-left:8px;' });
+						$buttonClose.on('click', function() {
+							$dialog.dialog('close');
+							get_metrotv_customer_services_list(customerID);
+						});
+						$respContainer.append($buttonClose);
+					}
+					});
+				});
+			},
+			error: function(xhr, status, err) {
+				console.error('AJAX error', status, err);
+				$('#api_customer_metrotv').html('<div style="color:red;">Błąd ładowania danych pakietów.</div>');
+			}
+		});
+    }
+    
+function addstb(accountid, packageid) {
+    var $dialog = $("#api_customer_metrotv");
+    $dialog.dialog("open");
+    $dialog.dialog('option', 'title', 'Dodawanie STB do pakietu.');
+
+    $dialog.html('<div id="metroport_message" class="lms-ui-spinner" style="text-align:center; font-size:16px; font-weight:bold; color:#2c3e50; margin:20px 0;">⏳ Trwa pobieranie danych z Metroport...</div>');
+    var $container = $('#metroport_message');
+
+    $.ajax({
+        url: '?m=metroportmetrotvservicesaction',
+        type: 'POST',
+        data: { get_metrotv_customer_account_by_id: 1, accountid: accountid, lmscustomerid: customerID },
+        dataType: 'json',
+        beforeSend: function () {
+            $container.empty().append(`
+                <div style="text-align:center; padding:12px;">
+                    <div class="spinner"></div>
+                    <div>Ładowanie danych...</div>
+                </div>
+            `);
+        },
+        success: function (response) {
+            var networks = Array.isArray(response.networks) ? response.networks : [];
+            var innerHtml = `
+                <style>
+                #api_customer_metrotv .lms-input.invalid, 
+                #api_customer_metrotv .lms-select.invalid { border-color: #d9534f !important; box-shadow: none; }
+                #api_customer_metrotv .metroport-error { color:#a94442; background:#f2dede; border:1px solid #ebcccc; padding:8px 10px; border-radius:3px; margin-bottom:10px; font-size:13px; }
+                #api_customer_metrotv .metroport-error strong { font-weight:700; }
+                .stb-wrap { padding:6px 4px; }
+                .stb-section { margin-bottom:10px; }
+                .stb-label { display:block; margin-bottom:4px; font-size:13px; color:#333; }
+                .row { display:flex; gap:10px; align-items:flex-start; margin-top:6px; }
+                .col { flex:1; }
+                .small-note { font-size:12px; color:#666; margin-top:6px; }
+                </style>
+                <div class="stb-wrap">
+                    <h3 class="stb-title">Dodawanie STB do pakietu</h3>
+                    <div id="metroport-error-holder"></div>
+                    <div class="stb-section">
+                        <label class="stb-label " for="network-select ">Wybierz sieć:</label>
+                        <select id="network-select" class="lms-select" style="width:100%; cursor: pointer;">
+                            <option value="">-- wybierz sieć --</option>
+                        </select>
+                        <div id="network-info" class="small-note">Wybierz sieć z listy powyżej.</div>
+                    </div>
+                    <div class="stb-section">
+                        <label class="stb-label " for="stb-select">Wybierz STB do dodania:</label>
+                        <select id="stb-select" class="lms-select lms-ui-advanced-select" style="width:100%;" disabled>
+                            <option value="">-- wybierz STB --</option>
+                        </select>
+                        <div id="stb-info" class="small-note"></div>
+                    </div>
+                    <div id="stb-buttons-placeholder" style="margin-top:12px; text-align:center;"></div>
+                </div>
+            `;
+
+            $container.empty().append(innerHtml);
+            $container = $('#metroport_message');
+            var $buttonSave = $('<button>', { type: 'button', text: 'Zapisz', class: 'lms-ui-button save_stb', style: 'margin-right:8px;' });
+            var $buttonCancel = $('<button>', { type: 'button', text: 'Anuluj', class: 'lms-ui-button' });
+            $('#stb-buttons-placeholder').append($buttonSave, $buttonCancel);
+            $buttonCancel.on('click', function () {
+                $('#api_customer_metrotv').empty();
+                $dialog.dialog('close');
+            });
+
+            var metroportErrorTimeoutId = null;
+            function showMetroportError(message) {
+                if (metroportErrorTimeoutId) { clearTimeout(metroportErrorTimeoutId); metroportErrorTimeoutId = null; }
+                var $holder = $('#metroport-error-holder');
+                var errHtml = '<div class="metroport-error"><strong>' + $('<div>').text(message).html() + '</strong></div>';
+                $holder.stop(true, true).html(errHtml).show();
+                metroportErrorTimeoutId = setTimeout(function () {
+                    $holder.fadeOut(250, function () { $(this).empty().show(); });
+                    $('.lms-input, .lms-select').removeClass('invalid');
+                    metroportErrorTimeoutId = null;
+                }, 10000);
+            }
+
+            // Wypełnij select sieci
+            var $networkSelect = $('#network-select');
+            networks.forEach(function (net) {
+                var text = net.name + (net.address_long ? (' ('+net.address_long+'/'+net.mask_prefix+') - '+net.transport) : '');
+                var $opt = $('<option>').val(net.id).text(text).data('network', net);
+                $networkSelect.append($opt);
+            });
+
+            $networkSelect.on('change', function () {
+                var net = $(this).find('option:selected').data('network') || null;
+                var $info = $('#network-info');
+                if (!net) { $info.text('Wybierz sieć z listy powyżej.'); return; }
+                var infoText = 'ID: ' + (net.id || '-') + ' | transport: ' + (net.transport || '-') + ' | STB: ' + (net.TotalSTBs || '0') + '/' + (net.size || '-');
+                $info.text(infoText);
+            });
+
+            // Ładuj STB od razu (niezależnie od sieci)
+            var $stbSelect = $('#stb-select');
+	
+            $stbSelect.prop('disabled', true).empty().append('<option value="">⏳ Ładowanie STB...</option>');
+            $('#stb-info').text('');
+            $.ajax({
+                url: '?m=metroportmetrotvservicesaction',
+                type: 'POST',
+                data: { get_stb_list: 1, accountid: accountid }, // bez networkid
+                dataType: 'json',
+                success: function(stbResp) {
+                    var stbs = Array.isArray(stbResp) ? stbResp : [];
+                    $stbSelect.empty().append('<option value="">-- wybierz STB --</option>');
+                    stbs.forEach(function(stbItem) {
+                        var mac = stbItem.mac || '';
+                        var serial = stbItem.serialnumber || '';
+                        var model = stbItem.ModelName || '';
+			
+                        var stbTxt = mac + ' (' + serial + ') - ' + model;
+                        var $opt = $('<option>').val(mac).text(stbTxt).data('stb', stbItem);
+                        $stbSelect.append($opt);
+                    });
+                    $stbSelect.prop('disabled', false);
+                    $('#stb-info').text(stbs.length > 0 ? 'Wybierz STB do dodania.' : 'Brak dostępnych STB.');
+		    $stbSelect.chosen();
+		    $('#stb-select').chosen({width: '100%'});
+                },
+                error: function(xhr, status, error) {
+                    $stbSelect.prop('disabled', true).empty().append('<option value="">Błąd ładowania STB</option>');
+                    $('#stb-info').text('Błąd pobierania listy STB.');
+                }
+            });
+
+            $container.on('click', '.save_stb', function() {
+                $('#metroport-error-holder').empty();
+                $('.lms-input, .lms-select').removeClass('invalid');
+                var fields = [
+                    { el: $('#network-select'), name: 'Sieć' },
+                    { el: $('#stb-select'), name: 'STB' }
+                ];
+                var invalids = [];
+                for (var i = 0; i < fields.length; i++) {
+                    var $el = fields[i].el;
+                    var val = ($el.val() || '').toString().trim();
+                    if (val === '') { invalids.push(fields[i]); $el.addClass('invalid'); }
+                }
+                if (invalids.length) { showMetroportError('Proszę wypełnić wszystkie pola oznaczone na czerwono.'); invalids[0].el.focus(); return; }
+
+                var payload = {
+                    account_id: accountid,
+                    packageid: packageid,
+                    network_id: $('#network-select').val(),
+                    stb_mac: $('#stb-select').val(),
+                    add_stb_to_package: 1
+                };
+
+                $.ajax({
+                    url: "?m=metroportmetrotvservicesaction",
+                    type: 'POST',
+                    data: payload,
+                    dataType: 'json',
+                    success: function(resp) {
+                        var $respContainer = $('#metroport_message');
+                        $respContainer.empty();
+                        if (resp && resp.success) {
+                            $respContainer.append(resp.message_html || '<div>OK</div>');
+                        } else {
+                            $respContainer.append(resp && resp.message_html ? resp.message_html : '<div style="color:red;">Nieznany błąd</div>');
+                        }
+                        var $buttonClose = $('<button>', { type: 'button', text: 'Zamknij', class: 'lms-ui-button', style: 'margin-left:8px;' });
+                        $respContainer.append($buttonClose);
+                        $buttonClose.on('click', function() {
+                            $dialog.dialog('close');
+							//location.reload();
+							get_metrotv_customer_services_list(customerID);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        var $respContainer = $('#metroport_message');
+                        $respContainer.empty().append('<div style="color:red;">Błąd serwera: ' + (xhr.responseText || error) + '</div>');
+                        var $buttonClose = $('<button>', { type: 'button', text: 'Zamknij', class: 'lms-ui-button', style: 'margin-left:8px;' });
+                        $respContainer.append($buttonClose);
+                        $buttonClose.on('click', function() {
+                            $dialog.dialog('close');
+                            get_metrotv_customer_services_list(customerID);
+                        });
+                    }
+                });
+            });
+
+        },
+        error: function (xhr, status, err) {
+            console.error('AJAX error', status, err);
+            $('#api_customer_metrotv').html('<div style="color:red;">Błąd ładowania danych.</div>');
+        }
+    });
+}
+    
+    
+    function delete_metrotv_STB_from_package_account(account_id, mac, name) {
+		confirmDialog(
+			"<center>Czy chcesz usunąć dekoder o adresie MAC <br>" + mac + "<br>z konta klienta ?</center>",
+			null
+		).done(function () {
+			window.location.href = "?m=metroportmetrotvservicesaction&account_id=" + account_id + "&mac=" + mac +'&DeleteStbFromAccountPackage=true&customerid='+customerID;
+		});
+		return false;
+    }    
+    
+    function delete_metrotv_package_from_account(account_id, packet_id,pkgName, name) {
+		confirmDialog(
+			"<center>Czy chcesz usunąć pakiet:<br> <strong><Br>(" + packet_id + ") "+pkgName+" ?</strong></center>",
+			null
+		).done(function () {
+			window.location.href = "?m=metroportmetrotvservicesaction&account_id=" + account_id + "&package_id=" + packet_id +'&DeletePackageFromAccount=true&customerid='+customerID;
+		});
+		return false;
+    }    
+    function delete_metrotv_account(account_id, location, name) {
+		confirmDialog(
+			"<center>Czy chcesz usunąć pakiet:<br> <strong><Br>(" + account_id + ") "+location+" ?</strong></center>",
+			null
+		).done(function () {
+			window.location.href = "?m=metroportmetrotvservicesaction&account_id=" + account_id +'&DeleteAccount=true&customerid='+customerID;
+		});
+		return false;
+    }    
+    
+    function block_account(account_id)
+    {
+		confirmDialog(
+			"<center>Czy chcesz zablokować konto:<br> <strong><Br>(" + account_id + ") ?</strong></center>",
+			null
+		).done(function () {
+			window.location.href = "?m=metroportmetrotvservicesaction&account_id=" + account_id +'&block=true&customerid='+customerID;
+		});
+		return false;
+    }
+    
+    function unblock_account(account_id)
+    {
+		confirmDialog(
+			"<center>Czy chcesz odblokować konto:<br> <strong><Br>(" + account_id + ")  ?</strong></center>",
+			null
+		).done(function () {
+			window.location.href = "?m=metroportmetrotvservicesaction&account_id=" + account_id +'&unblock=true&customerid='+customerID;
+		});
+		return false;
+    }
+
+</script>
+{/literal}

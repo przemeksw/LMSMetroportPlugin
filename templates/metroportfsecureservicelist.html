@@ -1,0 +1,73 @@
+{extends file="layout.html"}
+{block name="module_content"}
+<style>
+.alert {
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+}
+
+.fsecure-services-list {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.fsecure-services-list li {
+    margin-bottom: 5px;
+}
+</style>
+<h2>Lista pakietów F-SECURE dostępna w sprzedaży Metroport.</h2>
+
+{if $metroportFsecureResult.status == 'success' && $metroportFsecureResult.data|@count > 0}
+        <table cellpadding class="lmsbox lms-ui-datatable " width="100%">
+        <thead>
+            <tr>
+                <th>L.p.</th>
+                <th>Nazwa</th>
+                <th>Opis</th>
+                <th>Ilość licencji</th>
+            </tr>
+        </thead>
+        <tbody>
+            {foreach from=$metroportFsecureResult.data key=index item=service}
+                <tr class="highlight light">
+                    <td>{$index+1}</td>
+                    <td>{$service.name|escape}</td>
+                    <td>{$service.description|escape}</td>
+                    <td>{$service.license_size|escape}</td>
+                </tr>
+            {/foreach}
+        </tbody>
+    </table>
+
+{elseif $metroportFsecureResult.status == 'error'}
+    <div class="alert alert-danger">
+        {$metroportFsecureResult.message}
+    </div>
+
+{else}
+    <div class="alert alert-info">
+        Brak usług F-Secure do wyświetlenia.
+    </div>
+{/if}
+
+{/block}

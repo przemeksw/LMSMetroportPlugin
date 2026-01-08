@@ -1,0 +1,16 @@
+{extends file="layout.html"}
+{block name=module_content}
+
+<h2>Test połączenia z API Metroport</h2>
+
+{if $metroportTestResult.status == 'success'}
+    <p style="color:green;">✅ {$metroportTestResult.message1}</p>
+    <p style="color:green;">✅ {$metroportTestResult.message2}</p>
+    <p><strong>Login URL:</strong> {$metroportTestResult.login_url}</p>
+    <p><strong>Token:</strong> {$metroportTestResult.token}</p>
+
+{else}
+    <p style="color:red;">❌ {$metroportTestResult.message1}</p>
+{/if}
+
+{/block}

@@ -1,0 +1,81 @@
+{block name="customerinfobox-leftcolumn" prepend}
+    <tr id="tr_customer_update_mms_status" style="display: none;">
+        <td><i class="fa-solid fa-m"></i></td>
+        <td><button type="button" id="customer_update_mms_data_foce" class="lms-ui-button lms-ui-link-button " data-lms_customer_id="{$customerinfo.id}"><i class="fas fa-sync-alt"></i> Zaktualizuj dane klienta w Metroport</button></td>
+    </tr>
+{literal}
+    <script>
+	$(document).ready(function() {
+	    {/literal}
+	    var LmsUserRightAdd_Edit_MMMS_User_Access = "{ConfigHelper::checkPrivilege('metroportcustomerupdate_ajax')|escape:'javascript'}";
+	    var LmsUserRightAdd_Edit_MMMS_Fsecure_Access = "{ConfigHelper::checkPrivilege('metroportfsecureservicesaction')|escape:'javascript'}";  
+	    var LmsUserRightReadOnly_Fsecure_Customer_Access = "{ConfigHelper::checkPrivilege('metroport_readonly')|escape:'javascript'}";
+    
+	    {literal}
+	   
+	    if (LmsUserRightReadOnly_Fsecure_Customer_Access)
+	    {
+		//Checks if the client is added to MMS and activates the update button
+		$.ajax({
+		    url: '?m=metroportcustomer_ajax',   // bieżący adres strony
+		    type: 'POST',
+		    data: {customer_id: customerId, check_customer_in_mms:'true'},     
+		    dataType: 'json',            // zakładam że chcesz JSON w odpowiedzi
+		    success: function(response) {
+			if (response.success == 'true') {
+			    $("#tr_customer_update_mms_status").show();
+			} else {
+			    $("#tr_customer_update_mms_status").hide();
+			}
+		    },
+		    error: function(xhr, status, error) {
+				console.error("Błąd AJAX:", status, error);
+		    }
+		});
+
+		//Update data action button support
+		$('#customer_update_mms_data_foce').on('click', function(e) {
+		    e.preventDefault(); 
+		    $("#api_customer").dialog("open");
+		    $("#api_customer").dialog('option', 'title', 'Aktualizacja danych.');
+		    $("#api_customer").html('<div id="metroport_message" class="lms-ui-spinner" style="text-align:center; font-size:16px; font-weight:bold; color:#2c3e50; margin:20px 0;">⏳ Trwa aktualizacja danych w Metroport...</div>');
+		    var customerId = $(this).data('lms_customer_id');
+		    if (!customerId) {
+				console.log('Brak ID klienta!');
+				return;
+		    }
+		    $.ajax({
+				url: '?m=metroportcustomerupdate_ajax',   
+				type: 'POST',
+				data: {customer_id: customerId, customer_update:true},     
+				dataType: 'json',
+				success: function(response) {
+					$("#metroport_message").fadeOut(400, function() {
+						if (response.success === false) {
+							$("#api_customer").html(
+							'<div style="text-align:center; font-size:14px; color:red;">❌ ' + response.message + '</div>' +
+							'<div style="text-align:center; margin-top:20px;">' +
+								'<button type="button" class="lms-ui-button" onclick="$(\'#api_customer\').dialog(\'close\');">Zamknij</button>' +
+							'</div>'
+							);
+						} else {
+							$("#api_customer").html(
+							response.message_html +
+							'<div style="text-align:center; margin-top:20px;">' +
+								'<button type="button" class="lms-ui-button" onclick="$(\'#api_customer\').dialog(\'close\');">Zamknij</button>' +
+							'</div>'
+							);
+						}
+					});
+				},
+				error: function(xhr, status, error) {
+					console.error("Błąd AJAX:", status, error);
+					$("#metroport_message").text("❌ Wystąpił błąd podczas aktualizacji klienta");
+				}
+		    });
+		});
+	    }
+	});
+    </script>
+{/literal}
+{/block}

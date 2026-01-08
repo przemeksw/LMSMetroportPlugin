@@ -1,0 +1,13 @@
+{
+    "name": "vendor/l-m-s-metroport-plugin",
+    "description": "Description of project LMSMetroportPlugin.",
+    "authors": [
+        {
+            "name": "przemeksw",
+            "email": "p.swiderski@viphost.it"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "7.10.x-dev"
+    }
+}

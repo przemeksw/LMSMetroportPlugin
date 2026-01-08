@@ -1,0 +1,5 @@
+# Ignoruj konfiguracje SFTP/FTP Simple
+.vscode/sftp.json
+.vscode/ftp-simple.json
+.history/
+.cursorrules
