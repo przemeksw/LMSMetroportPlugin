@@ -56,7 +56,7 @@ Minimalny zestaw danych wymagany do aktywacji produktów:
 - NIP / PESEL,
 - adres e-mail.
 
-## 6. Możliwości pluginu (checklisty GitHub – wymagany wzorzec "- [ ]")
+## 6. Możliwości pluginu
 
 - [x] 6.1 Globalne
     - [x] 6.1.1 Dodawanie klienta
