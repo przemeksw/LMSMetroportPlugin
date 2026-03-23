@@ -27,10 +27,8 @@
 
 $this->BeginTrans();
 
-$this->Execute("
-   INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, configid, divisionid) VALUES ('metroport', 'list_pagelimit', '100', 'Limit stron listy', 0, 7, NULL, NULL, NULL);
-    ");
-
-$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2026032301', 'dbversion_LMSMetroportPlugin'));
+$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, configid, divisionid) VALUES ('metroport', 'show_fsecure_in_customer_tab', '1', 'Pokaż na karcie klienta zakładkę F-Secure (1 - tak, 0 - nie)', 0, 7, NULL, NULL, NULL)");
+$this->Execute("INSERT INTO uiconfig (section, var, value, description, disabled, type, userid, configid, divisionid) VALUES ('metroport', 'show_metrotv_in_customer_tab', '1', 'Pokaż na karcie klienta zakładkę MetroTV (1 - tak, 0 - nie)', 0, 7, NULL, NULL, NULL)");
+$this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2026032302', 'dbversion_LMSMetroportPlugin'));
 
 $this->CommitTrans();

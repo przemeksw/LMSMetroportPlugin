@@ -467,7 +467,7 @@ a.badge:focus, a.badge:hover {
             width:"740px",
             position: { my: 'top', at: 'top+150' },
         });
-	get_metrotv_customer_services_list(customer_id);
+	get_metrotv_customer_services_list(customerID);
     });
     
     {literal}
@@ -778,6 +778,8 @@ a.badge:focus, a.badge:hover {
 		
 		var $tbody = $('.metrotv_customer_service tbody');
 		$tbody.empty(); // usuń spinner
+		var count = response.accounts ? Object.keys(response.accounts).length : 0;
+		$('#ServicesMetrotvCount').text(count);
 
 		function safe(val, fallback) {
 		    return val !== undefined && val !== null && val !== '' ? val : fallback;

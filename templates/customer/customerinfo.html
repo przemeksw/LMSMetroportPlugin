@@ -1,4 +1,8 @@
 {block name="customernodesbox" append}
-	{include file="metroportfsecureservicecustomer.html"}
-	{include file="metroportmetrotvservicecustomer.html"}
+	{if ConfigHelper::getConfig('metroport.show_fsecure_in_customer_tab', '1') != '0'}
+		{include file="metroportfsecureservicecustomer.html"}
+	{/if}
+	{if ConfigHelper::getConfig('metroport.show_metrotv_in_customer_tab', '1') != '0'}
+		{include file="metroportmetrotvservicecustomer.html"}
+	{/if}
 {/block}

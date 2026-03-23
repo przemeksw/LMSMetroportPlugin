@@ -106,6 +106,9 @@ Minimalny zestaw danych wymagany do aktywacji produktów:
 - Wersja `2026032301`: dodano wspólny skrypt `templates/datatable_pagelimit_fix.html`, który dopisuje brakującą wartość limitu (np. `30`) do wyboru DataTables i ustawia ją jako aktywną.
 - Hotfix (bez zmiany DB version): poprawiono etykietę opcji DataTables dla wartości `-1` – wyświetlanie jako `Wszystkie` zamiast `-1`.
 - Hotfix (bez zmiany DB version): naprawiono ostrzeżenia PHP w `bin/metroport_customer_update.php` (`Undefined array key "data"`) – bezpieczny odczyt odpowiedzi MMS i sprawdzenie istnienia `data[1][0]` przed użyciem pól `userid`/`nip`/`pesel`.
+- Wersja `2026032302`: dodano ustawienia uiconfig `metroport.show_fsecure_in_customer_tab` i `metroport.show_metrotv_in_customer_tab` – pozwalają na ukrycie odpowiednich boxów (F-Secure / MetroTV) na karcie klienta (wartość `0` ukrywa, `1` wyświetla).
+- Hotfix (bez zmiany DB version): naprawiono błąd braku danych w boxie MetroTV gdy F-Secure jest wyłączone – zmienna `customerID` używana przez funckję `get_metrotv_customer_services_list()` była wcześniej zdefiniowana z literówką (`customer_id`), co powodowało zależność od obecności szablonu F-Secure na stronie.
+- Hotfix (bez zmiany DB version): naprawiono brakującą liczbę kont w nagłówku „Usługi MetroTv (Metroport) (X):" – po załadowaniu danych licznik `ServicesMetrotvCount` jest teraz ustawiany na podstawie liczby kluczy w `response.accounts`.
 
 
     
