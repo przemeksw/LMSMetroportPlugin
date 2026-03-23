@@ -39,6 +39,13 @@ class MetroportInitHandler
         $plugin_templates = PLUGINS_DIR . DIRECTORY_SEPARATOR . LMSMetroportPlugin::PLUGIN_DIRECTORY_NAME . DIRECTORY_SEPARATOR . 'templates';
         array_unshift($template_dirs, $plugin_templates);
         $hook_data->setTemplateDir($template_dirs);
+
+        $list_pagelimit = (int) \ConfigHelper::getConfig(
+            'metroport.list_pagelimit',
+            \ConfigHelper::getConfig('phpui.list_pagelimit', 100)
+        );
+        $hook_data->assign('metroport_list_pagelimit', $list_pagelimit > 0 ? $list_pagelimit : 100);
+
         return $hook_data;
     }
 

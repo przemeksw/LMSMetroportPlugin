@@ -74,7 +74,7 @@
 <h2>Lista klientów z usługą MetroTV.</h2>
 
 {if $metroportclientlistResult.status == 'success' && $metroportclientlistResult.data.data|@count > 0}
-<table cellpadding class="lmsbox  lms-ui-datatable" id=genieacscustomerdevlist>
+<table cellpadding class="lmsbox  lms-ui-datatable" id=genieacscustomerdevlist data-page-length="{$metroport_list_pagelimit|default:100|intval}" data-page-size="{$metroport_list_pagelimit|default:100|intval}">
         <colgroup>
 			<col >
 			<col >
@@ -202,4 +202,5 @@
     </div>
 {/if}
 
+{include file="datatable_pagelimit_fix.html"}
 {/block}

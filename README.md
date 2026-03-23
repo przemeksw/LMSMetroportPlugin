@@ -98,6 +98,15 @@ Minimalny zestaw danych wymagany do aktywacji produktów:
 - [ ] 7.1 Import bilingów MetroTV i F-SECURE z systemu Metroport (czekamy na wsparcie Metroport)
 - [ ] 7.2 Dodawanie pozycji bilingowych do wystawianych faktur lub tworzenie nowych faktur na podstawie bilingów (czekamy na wsparcie Metroport)
 
+## 8. Wprowadzone zmiany
+
+- Wersja `2025122900`: poprawiono aktualizację DB `postgres.2025122900.php` – usunięto nieobsługiwane w PostgreSQL `ADD CONSTRAINT IF NOT EXISTS` i zastosowano poprawne `ALTER TABLE ... ADD CONSTRAINT ... UNIQUE (serialnumber)`.
+- Wersja `2026032301`: dodano obsługę limitu stron tabel z ustawień LMS – odczyt `metroport.list_pagelimit` (fallback do `phpui.list_pagelimit`) i przekazanie wartości do widoków.
+- Wersja `2026032301`: ujednolicono konfigurację tabel `lms-ui-datatable` – wszystkie listy pluginu otrzymały ustawienie `data-page-length`/`data-page-size` z wartości konfiguracyjnej.
+- Wersja `2026032301`: dodano wspólny skrypt `templates/datatable_pagelimit_fix.html`, który dopisuje brakującą wartość limitu (np. `30`) do wyboru DataTables i ustawia ją jako aktywną.
+- Hotfix (bez zmiany DB version): poprawiono etykietę opcji DataTables dla wartości `-1` – wyświetlanie jako `Wszystkie` zamiast `-1`.
+- Hotfix (bez zmiany DB version): naprawiono ostrzeżenia PHP w `bin/metroport_customer_update.php` (`Undefined array key "data"`) – bezpieczny odczyt odpowiedzi MMS i sprawdzenie istnienia `data[1][0]` przed użyciem pól `userid`/`nip`/`pesel`.
+
 
     
 

@@ -38,7 +38,7 @@
 <h2>Lista pakietów F-SECURE dostępna w sprzedaży Metroport.</h2>
 
 {if $metroportFsecureResult.status == 'success' && $metroportFsecureResult.data|@count > 0}
-        <table cellpadding class="lmsbox lms-ui-datatable " width="100%">
+        <table cellpadding class="lmsbox lms-ui-datatable " width="100%" data-page-length="{$metroport_list_pagelimit|default:100|intval}" data-page-size="{$metroport_list_pagelimit|default:100|intval}">
         <thead>
             <tr>
                 <th>L.p.</th>
@@ -70,4 +70,5 @@
     </div>
 {/if}
 
+{include file="datatable_pagelimit_fix.html"}
 {/block}

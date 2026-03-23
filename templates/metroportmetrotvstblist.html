@@ -52,7 +52,7 @@
 
 {if $metroportMetroTVResult.status == 'success' && $metroportMetroTVResult.data|@count > 0}
 <button style="margin-bottom: 10px;" class="stb_add btn btn-primary">DODAJ STB</button>
-        <table cellpadding class="lmsbox lms-ui-datatable " width="100%">
+		<table cellpadding class="lmsbox lms-ui-datatable " width="100%" data-page-length="{$metroport_list_pagelimit|default:100|intval}" data-page-size="{$metroport_list_pagelimit|default:100|intval}">
         <thead>
             <tr>
                 <th>L.p.</th>
@@ -103,6 +103,7 @@
         Brak usług MetroTV do wyświetlenia.
     </div>
 {/if}
+{include file="datatable_pagelimit_fix.html"}
 <div  style="display:none; font-size:12px;" id="api_stb_div" title=""></div>
 {literal}
 <script>

@@ -37,7 +37,7 @@ use LMSMetroportPlugin\MetroTV;
 class LMSMetroportPlugin extends LMSPlugin
 {
     const PLUGIN_DIRECTORY_NAME = 'LMSMetroportPlugin';
-    const PLUGIN_DB_VERSION = '2025122900';
+    const PLUGIN_DB_VERSION = '2026032301';
     const PLUGIN_NAME = 'LMSMetroportPlugin';
     const PLUGIN_ALIAS = 'LMSMetroportPlugin';
     const PLUGIN_DESCRIPTION = 'Obsługa Metroport';

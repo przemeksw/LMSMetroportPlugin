@@ -168,42 +168,51 @@ $rows = $DB->GetAll("SELECT c.* FROM customers c LEFT JOIN metroport_customers m
 foreach ($rows as $row) {
     $typy = [
         '0' => 'Indywidualny',
-        '1' => 'Firma'
+        '1' => 'Firma',
     ];
-    $mmsuserid="";
+
     $typ = isset($typy[$row['type']]) ? $typy[$row['type']] : 'Nieznany typ';
-    $nip=$MetroportGlobal->formatNip($row['ten']) ?? '';
-    if ($row['type']=="0")
-    {
-        if ($row['ssn']!="")
-        {
-            $ReasonCheckClientInMMS=$MetroportGlobal->CheckMetroportCustomerExistByPesel($row['ssn']);
-            if ($ReasonCheckClientInMMS['data']['1']['0']['userid']!="")
-            {
-                echo "CustomerID: " . $row['id'] . ", Typ: ". $typ.", Imię Nazwisko: ".$row['name']." ".$row['lastname'].", PESEL: ".$row['ssn']." -- Powiązano z Metroport ID: ".$ReasonCheckClientInMMS['data']['1']['0']['userid'].", PESEL: ".$ReasonCheckClientInMMS['data']['1']['0']['pesel']."\n";
-                $sql_insert_new_profile="INSERT INTO metroport_customers (metroport_user_id,lms_user_id) VALUES (?,?)";
-                $sql_insert_new_profile_param=array($ReasonCheckClientInMMS['data']['1']['0']['userid'],$row['id']);                
-                $res1 = $DB->Execute($sql_insert_new_profile,$sql_insert_new_profile_param);
-            }
-            else
-                echo "CustomerID: " . $row['id'] . ", Typ: ". $typ.", Imię Nazwisko: ".$row['name']." ".$row['lastname'].", PESEL: ".$row['ssn']." -- Nie odnaleziono w bazie MMS \n";
-        } else {
-            echo "CustomerID: " . $row['id'] . ", Typ: ". $typ.", Imię Nazwisko: ".$row['name']." ".$row['lastname'].", PESEL: ".$row['ssn']. "-- Brak podanego PESEL - pomijam. \n";
-        }
-    } elseif ($row['type']=="1") {
-        if ($row['ten']!="")
-        {
-            $ReasonCheckClientInMMS=$MetroportGlobal->CheckMetroportCustomerExistByNip($nip);
-            if ($ReasonCheckClientInMMS['data']['1']['0']['userid']!="")
-            {
-                echo "CustomerID: " . $row['id'] . ", Typ: ". $typ.", Imię Nazwisko: ".$row['name']." ".$row['lastname'].", NIP: ".$nip." -- Powiązano z Metroport ID: ".$ReasonCheckClientInMMS['data']['1']['0']['userid'].", NIP: ".$ReasonCheckClientInMMS['data']['1']['0']['nip']."\n";
+    $nip = $MetroportGlobal->formatNip($row['ten']) ?? '';
+
+    if ($row['type'] == '0') {
+        if ($row['ssn'] != '') {
+            $ReasonCheckClientInMMS = $MetroportGlobal->CheckMetroportCustomerExistByPesel($row['ssn']);
+            $mmsCustomer = isset($ReasonCheckClientInMMS['data'][1][0])
+                ? $ReasonCheckClientInMMS['data'][1][0]
+                : null;
+
+            if (is_array($mmsCustomer) && !empty($mmsCustomer['userid'])) {
+                echo "CustomerID: " . $row['id'] . ", Typ: " . $typ . ", Imię Nazwisko: " . $row['name'] . " " . $row['lastname'] . ", PESEL: " . $row['ssn']
+                    . " -- Powiązano z Metroport ID: " . $mmsCustomer['userid'] . ", PESEL: " . ($mmsCustomer['pesel'] ?? '') . "\n";
+
                 $sql_insert_new_profile = "INSERT INTO metroport_customers (metroport_user_id,lms_user_id) VALUES (?,?)";
-                $sql_insert_new_profile_param = array($ReasonCheckClientInMMS['data']['1']['0']['userid'], $row['id']);
-                $res1 = $DB->Execute($sql_insert_new_profile, $sql_insert_new_profile_param);
-            } else
-                echo "CustomerID: " . $row['id'] . ", Typ: ". $typ.", Imię Nazwisko: ".$row['name']." ".$row['lastname'].", NIP: ".$nip." -- Nie odnaleziono w bazie MMS \n";
+                $sql_insert_new_profile_param = array($mmsCustomer['userid'], $row['id']);
+                $DB->Execute($sql_insert_new_profile, $sql_insert_new_profile_param);
+            } else {
+                echo "CustomerID: " . $row['id'] . ", Typ: " . $typ . ", Imię Nazwisko: " . $row['name'] . " " . $row['lastname'] . ", PESEL: " . $row['ssn'] . " -- Nie odnaleziono w bazie MMS \n";
+            }
         } else {
-            echo "CustomerID: " . $row['id'] . ", Typ: ". $typ.", Imię Nazwisko: ".$row['name']." ".$row['lastname'].", NIP: ".$nip." -- Brak podanego NIP - pomijam. \n";
+            echo "CustomerID: " . $row['id'] . ", Typ: " . $typ . ", Imię Nazwisko: " . $row['name'] . " " . $row['lastname'] . ", PESEL: " . $row['ssn'] . " -- Brak podanego PESEL - pomijam. \n";
+        }
+    } elseif ($row['type'] == '1') {
+        if ($row['ten'] != '') {
+            $ReasonCheckClientInMMS = $MetroportGlobal->CheckMetroportCustomerExistByNip($nip);
+            $mmsCustomer = isset($ReasonCheckClientInMMS['data'][1][0])
+                ? $ReasonCheckClientInMMS['data'][1][0]
+                : null;
+
+            if (is_array($mmsCustomer) && !empty($mmsCustomer['userid'])) {
+                echo "CustomerID: " . $row['id'] . ", Typ: " . $typ . ", Imię Nazwisko: " . $row['name'] . " " . $row['lastname'] . ", NIP: " . $nip
+                    . " -- Powiązano z Metroport ID: " . $mmsCustomer['userid'] . ", NIP: " . ($mmsCustomer['nip'] ?? '') . "\n";
+
+                $sql_insert_new_profile = "INSERT INTO metroport_customers (metroport_user_id,lms_user_id) VALUES (?,?)";
+                $sql_insert_new_profile_param = array($mmsCustomer['userid'], $row['id']);
+                $DB->Execute($sql_insert_new_profile, $sql_insert_new_profile_param);
+            } else {
+                echo "CustomerID: " . $row['id'] . ", Typ: " . $typ . ", Imię Nazwisko: " . $row['name'] . " " . $row['lastname'] . ", NIP: " . $nip . " -- Nie odnaleziono w bazie MMS \n";
+            }
+        } else {
+            echo "CustomerID: " . $row['id'] . ", Typ: " . $typ . ", Imię Nazwisko: " . $row['name'] . " " . $row['lastname'] . ", NIP: " . $nip . " -- Brak podanego NIP - pomijam. \n";
         }
     }
 }

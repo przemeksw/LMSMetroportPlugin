@@ -144,7 +144,7 @@ $this->Execute("CREATE INDEX IF NOT EXISTS metroport_metrotv_stb_iptv_accountid 
 $this->Execute("CREATE INDEX IF NOT EXISTS metroport_metrotv_stb_active ON metroport_metrotv_stb (active)");
 
 // Unikalność numeru seryjnego dla poprawnego UPSERT
-$this->Execute("ALTER TABLE metroport_metrotv_stb ADD CONSTRAINT IF NOT EXISTS metroport_metrotv_stb_serial_unique UNIQUE (serialnumber)");
+$this->Execute("ALTER TABLE metroport_metrotv_stb ADD CONSTRAINT metroport_metrotv_stb_serial_unique UNIQUE (serialnumber)");
 
 $this->Execute("UPDATE dbinfo SET keyvalue = ? WHERE keytype = ?", array('2025122900', 'dbversion_LMSMetroportPlugin'));
 

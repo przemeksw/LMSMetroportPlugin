@@ -73,7 +73,7 @@
 </style>
 <h2>Lista operacji usługi F-SECURE.</h2>
 {if $metroportfsecureoperationlistResult.status == 'success' && $metroportfsecureoperationlistResult.data|@count > 0}
-	<table cellpadding class="lmsbox  lms-ui-datatable" id=genieacscustomerdevlist>
+	<table cellpadding class="lmsbox  lms-ui-datatable" id=genieacscustomerdevlist data-page-length="{$metroport_list_pagelimit|default:100|intval}" data-page-size="{$metroport_list_pagelimit|default:100|intval}">
         <colgroup>
                 <col >
                 <col >
@@ -112,8 +112,9 @@
 				</td>
 				<td>
 					<strong>Data wykonania zlecenia</strong>
-				</td>
-				<td></td><td></td><td></td>
+{/if}
+{include file="datatable_pagelimit_fix.html"}
+{/block}
 			</tr>
         </thead>
         <tbody>
