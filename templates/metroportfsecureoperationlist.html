@@ -34,29 +34,30 @@
 .fsecure-services-list li {
     margin-bottom: 5px;
 }
+
 .badge {
-  display: inline-block;
-  padding: 0.25em 0.4em;
-  font-size: 75%;
-  font-weight: 700;
-  line-height: 1;
-  color: #fff;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: baseline;
-  border-radius: 0.25rem;
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
 }
 
 /* ukryj pusty badge (jak w bootstrap) */
 .badge:empty {
-  display: none;
+    display: none;
 }
 
 /* pill */
 .badge-pill {
-  padding-right: 0.6em;
-  padding-left: 0.6em;
-  border-radius: 10rem;
+    padding-right: 0.6em;
+    padding-left: 0.6em;
+    border-radius: 10rem;
 }
 
 /* kolory podstawowe */
@@ -68,112 +69,111 @@
 .badge-info          { background-color: #17a2b8; }
 .badge-light         { background-color: #f8f9fa; color: #212529; }
 .badge-dark          { background-color: #343a40; }
-
-
 </style>
-<h2>Lista operacji usługi F-SECURE.</h2>
+
+<h2>Lista operacji uslugi F-SECURE.</h2>
 {if $metroportfsecureoperationlistResult.status == 'success' && $metroportfsecureoperationlistResult.data|@count > 0}
-	<table cellpadding class="lmsbox  lms-ui-datatable" id=genieacscustomerdevlist data-page-length="{$metroport_list_pagelimit|default:100|intval}" data-page-size="{$metroport_list_pagelimit|default:100|intval}">
+    <table cellpadding class="lmsbox lms-ui-datatable" id="genieacscustomerdevlist" data-page-length="{$metroport_list_pagelimit|default:100|intval}" data-page-size="{$metroport_list_pagelimit|default:100|intval}">
         <colgroup>
-                <col >
-                <col >
-                <col >
-                <col >
-                <col >
-                <col >
-				<col >
-				<col >	
-				<col >
-				<col>
-				<col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
         </colgroup>
         <thead>
-			<tr>
-				<td>
-					<strong>Id rekordu</strong>
-				</td>
-				<td>
-					<strong>Imię Nazwisko/Nazwa (LMS USERNAME)</strong>
-				</td>
-				<td>
-					<strong>Id konta</strong>
-				</td>
-				<td>
-					<strong>Status</strong>
-				</td>
-				<td>
-					<strong>Typ</strong>
-				</td>
-				<td>
-					<strong>Komunikat błedu</strong>
-				</td>
-				<td>
-					<strong>Data dodania zlecenia</strong>
-				</td>
-				<td>
-					<strong>Data wykonania zlecenia</strong>
-{/if}
-{include file="datatable_pagelimit_fix.html"}
-{/block}
-			</tr>
+            <tr>
+                <td>
+                    <strong>Id rekordu</strong>
+                </td>
+                <td>
+                    <strong>Imie Nazwisko/Nazwa (LMS USERNAME)</strong>
+                </td>
+                <td>
+                    <strong>Id konta</strong>
+                </td>
+                <td>
+                    <strong>Status</strong>
+                </td>
+                <td>
+                    <strong>Typ</strong>
+                </td>
+                <td>
+                    <strong>Komunikat bledu</strong>
+                </td>
+                <td>
+                    <strong>Data dodania zlecenia</strong>
+                </td>
+                <td>
+                    <strong>Data wykonania zlecenia</strong>
+                </td>
+                <td></td><td></td><td></td>
+            </tr>
         </thead>
         <tbody>
             {cycle values="lucid,light" print=false}
-				{section name=customerlist loop=$metroportfsecureoperationlistResult.data start=$start max=$pagelimit}
-				<tr data-device-id="{$netdevlist[netdevlist].device_id|escape}" class="highlight {cycle advance=false}">
-					<td class="valign-top">
-						{$metroportfsecureoperationlistResult.data[customerlist].id}
-					</td>
-					<td class="valign-top">
-						{$metroportfsecureoperationlistResult.data[customerlist].mms_username} ( <span style="color: #800000;"><a href="?m=customerinfo&id={$metroportfsecureoperationlistResult.data[customerlist].lms_user_id}">{$metroportfsecureoperationlistResult.data[customerlist].lms_username}</a></span> )
-					</td>
-					<td class="valign-top">
-						{$metroportfsecureoperationlistResult.data[customerlist].secur_accountid} 
-					</td>
-					<td class="valign-top">
-						{$metroportfsecureoperationlistResult.data[customerlist].status}
-					</td>
-					<td class="valign-top">
-						{$metroportfsecureoperationlistResult.data[customerlist].type}
-					</td>
-					<td class="valign-top">
-						{$metroportfsecureoperationlistResult.data[customerlist].errormsg}
-					</td>
-					<td class="valign-top">
-						{$metroportfsecureoperationlistResult.data[customerlist].creationdate}
-					</td>
-					<td class="valign-top">
-						{$metroportfsecureoperationlistResult.data[customerlist].execdate}
-					</td>
-					<td></td><td></td><td></td>
-				</tr>
-				{sectionelse}
-					<tr>
-						<td colspan="10" class="empty-table">
-							<p>Brak klientów w systemie MMS.</p>
-						</td>
-					</tr>
-				{/section}
+            {section name=customerlist loop=$metroportfsecureoperationlistResult.data start=$start max=$pagelimit}
+                <tr data-device-id="{$netdevlist[netdevlist].device_id|escape}" class="highlight {cycle advance=false}">
+                    <td class="valign-top">
+                        {$metroportfsecureoperationlistResult.data[customerlist].id}
+                    </td>
+                    <td class="valign-top">
+                        {$metroportfsecureoperationlistResult.data[customerlist].mms_username} ( <span style="color: #800000;"><a href="?m=customerinfo&id={$metroportfsecureoperationlistResult.data[customerlist].lms_user_id}">{$metroportfsecureoperationlistResult.data[customerlist].lms_username}</a></span> )
+                    </td>
+                    <td class="valign-top">
+                        {$metroportfsecureoperationlistResult.data[customerlist].secur_accountid}
+                    </td>
+                    <td class="valign-top">
+                        {$metroportfsecureoperationlistResult.data[customerlist].status}
+                    </td>
+                    <td class="valign-top">
+                        {$metroportfsecureoperationlistResult.data[customerlist].type}
+                    </td>
+                    <td class="valign-top">
+                        {$metroportfsecureoperationlistResult.data[customerlist].errormsg}
+                    </td>
+                    <td class="valign-top">
+                        {$metroportfsecureoperationlistResult.data[customerlist].creationdate}
+                    </td>
+                    <td class="valign-top">
+                        {$metroportfsecureoperationlistResult.data[customerlist].execdate}
+                    </td>
+                    <td></td><td></td><td></td>
+                </tr>
+            {sectionelse}
+                <tr>
+                    <td colspan="11" class="empty-table">
+                        <p>Brak klientow w systemie MMS.</p>
+                    </td>
+                </tr>
+            {/section}
         </tbody>
         <tfoot>
             <tr>
-				<td colspan="10" class="text-center">
-				<strong>
-					{trans("Total:")} {$listdata.total|default:"0"}
-				</strong>
-				</td>
-				<td></td>
+                <td colspan="10" class="text-center">
+                    <strong>
+                        {trans("Total:")} {$listdata.total|default:"0"}
+                    </strong>
+                </td>
+                <td></td>
             </tr>
         </tfoot>
-	</table>
+    </table>
 {elseif $metroportfsecureoperationlistResult.status == 'error'}
     <div class="alert alert-danger">
         {$metroportfsecureoperationlistResult.message}
     </div>
 {else}
     <div class="alert alert-info">
-        Brak usług F-Secure do wyświetlenia.
+        Brak uslug F-Secure do wyswietlenia.
     </div>
 {/if}
 
+{include file="datatable_pagelimit_fix.html"}
 {/block}
